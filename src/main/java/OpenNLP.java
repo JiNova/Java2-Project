@@ -28,7 +28,7 @@ public class OpenNLP {
         }
     }
 
-    public void getTag(String input) {
+    public void POSTags(String input) {
         try {
             if (model != null) {
                 POSTaggerME taggerME = new POSTaggerME(model);
