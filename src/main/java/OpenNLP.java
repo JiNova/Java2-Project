@@ -2,8 +2,11 @@
  * Created by Evo on 10.07.2017.
  */
 
+import jdk.internal.util.xml.impl.Input;
 import opennlp.tools.cmdline.postag.POSModelLoader;
 import opennlp.tools.postag.*;
+import opennlp.tools.sentdetect.*;
+import opennlp.tools.tokenize.*;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 
 import java.io.*;
@@ -11,22 +14,6 @@ public class OpenNLP {
     POSModel model = null;
     POSTagger posInstance = null;
 
-    public void loadModel() {
-        File inputFile = null;
-        try {
-            String fileLocation = "opennlp/en-pos-maxent.bin";
-            if (new File(fileLocation).exists()) {
-                inputFile = new File(fileLocation);
-            } else {
-                System.out.println("File: " + fileLocation + " does not exists.");
-            }
-            if (inputFile != null) {
-                model = new POSModelLoader().load(inputFile);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void POSTags(String input) {
         try {
@@ -52,5 +39,54 @@ public class OpenNLP {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void SentenceSplitter(String input){
+        SentenceDetectorME sentenceDetector = null;
+        InputStream modelIn = null;
+
+        try{
+            modelIn = getClass().getResourceAsStream("en-sent.bin");
+            final SentenceModel sentenceModel = new SentenceModel(modelIn);
+            modelIn.close();
+            sentenceDetector = new SentenceDetectorME(sentenceModel);
+        }catch (final IOException e){
+            e.printStackTrace();
+        }finally{
+            if(modelIn != null){
+                try{
+                    modelIn.close();
+                }catch (final IOException e){
+
+                }
+            }
+        }
+        String senteces[]=(sentenceDetector.sentDetect(input));
+        for(String s : senteces){
+            System.out.println(s);
+        }
+    }
+
+    public void Tokenizer(String input) throws FileNotFoundException{
+        InputStream modelIn = getClass().getResourceAsStream("en-token.bin");
+            try{
+                TokenizerModel model = new TokenizerModel(modelIn);
+                Tokenizer tokenizer = new TokenizerME(model);
+                String[] tokens = tokenizer.tokenize(input);
+
+                for(String t : tokens){
+                    System.out.println(t);
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+            finally{
+                if(modelIn != null){
+                    try{
+                        modelIn.close();
+                    }catch (IOException e){
+                    }
+                }
+            }
     }
 }
