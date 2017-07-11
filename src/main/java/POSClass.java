@@ -17,27 +17,35 @@ import java.util.ArrayList;
 
 
 import java.io.*;
-public class POSTagger {
+public class POSClass {
 
     public ArrayList<String[]> sentences;
-    public String[] tkns;
+    public ArrayList<String[]> tkns;
+    public ArrayList<String[]> POStags;
 
-    public void POSTag(String input)throws IOException{
 
-        InputStream inputStream = new FileInputStream("en-pos-maxent.bin");
-        POSModel model = new POSModel(inputStream);
-        PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
-        POSTaggerME tagger = new POSTaggerME(model);
+    public void POSTag() {
 
-        if(input != null) {
-            perfMon.start();
-            String whiteSpaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(input);
-            String tags[] = tagger.tag(whiteSpaceTokenizerLine);
+        InputStream inputStream = getClass().getResourceAsStream("en-pos-maxent.bin");
+        try {
+            POSModel model = new POSModel(inputStream);
+            POSTaggerME tagger = new POSTaggerME(model);
 
-            POSSample sample = new POSSample(whiteSpaceTokenizerLine, tags);
-            System.out.println(sample.toString());
-            perfMon.incrementCounter();
-            perfMon.stopAndPrintFinalResult();
+
+            for (String[] s : sentences) {
+                String tags[] = tagger.tag(s);
+                POStags.add(tags);
+            }
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                }
+            }
         }
     }
 
@@ -51,6 +59,9 @@ public class POSTagger {
 
 
             String[] sent = sentenceDetector.sentDetect(input);
+            for(String s : sent){
+                sentences.add(s.split("."));
+            }
 
         }catch (final IOException e){
             e.printStackTrace();
@@ -65,17 +76,20 @@ public class POSTagger {
         }
     }
 
-    public void Tokenizer(String input) throws FileNotFoundException{
+    public void Tokenizer() throws FileNotFoundException{
         InputStream modelIn = getClass().getResourceAsStream("en-token.bin");
             try{
                 TokenizerModel model = new TokenizerModel(modelIn);
                 Tokenizer tokenizer = new TokenizerME(model);
-                tkns = tokenizer.tokenize(input);
+                for(String[] s : sentences){
+                    tkns.add(s);
+                }
 
-            }catch(IOException e){
+            } catch(FileNotFoundException e){
                 e.printStackTrace();
-            }
-            finally{
+            } catch(IOException e){
+                e.printStackTrace();
+            } finally{
                 if(modelIn != null){
                     try{
                         modelIn.close();
