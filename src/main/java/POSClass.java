@@ -18,12 +18,14 @@ import java.util.ArrayList;
 
 import java.io.*;
 public class POSClass {
-
+    public String text;
     public ArrayList<String[]> sentences;
     public ArrayList<String[]> tkns;
     public ArrayList<String[]> POStags;
 
-
+    public POSClass(String s){
+        text = s;
+    }
     public void POSTag() {
 
         InputStream inputStream = getClass().getResourceAsStream("en-pos-maxent.bin");
@@ -49,7 +51,7 @@ public class POSClass {
         }
     }
 
-    public void SentenceSplitter(String input){
+    public void sSplitter(text){
         InputStream modelIn = getClass().getResourceAsStream("en-sent.bin");
         try{
 
@@ -60,7 +62,7 @@ public class POSClass {
 
             String[] sent = sentenceDetector.sentDetect(input);
             for(String s : sent){
-                sentences.add(s.split("."));
+                sentences.add(s.split("[./?!]"));
             }
 
         }catch (final IOException e){
@@ -97,5 +99,18 @@ public class POSClass {
                     }
                 }
             }
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+        POSClass a = new POSClass("This is a test. Does it work? I hope so!");
+        a.sSplitter();
+        try {
+            a.Tokenizer();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        a.POSTag();
+
+        for(int i; i< sentences)
     }
 }
