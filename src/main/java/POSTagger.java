@@ -12,11 +12,15 @@ import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 
 
 
 import java.io.*;
-public class OpenNLP {
+public class POSTagger {
+
+    public ArrayList<String[]> sentences;
+    public String[] tkns;
 
     public void POSTag(String input)throws IOException{
 
@@ -38,14 +42,16 @@ public class OpenNLP {
     }
 
     public void SentenceSplitter(String input){
-        SentenceDetectorME sentenceDetector = null;
-        InputStream modelIn = null;
-        String[] result = null;
+        InputStream modelIn = getClass().getResourceAsStream("en-sent.bin");
         try{
-            modelIn = getClass().getResourceAsStream("en-sent.bin");
+
             final SentenceModel sentenceModel = new SentenceModel(modelIn);
             modelIn.close();
-            sentenceDetector = new SentenceDetectorME(sentenceModel);
+            SentenceDetectorME sentenceDetector = new SentenceDetectorME(sentenceModel);
+
+
+            String[] sent = sentenceDetector.sentDetect(input);
+
         }catch (final IOException e){
             e.printStackTrace();
         }finally{
@@ -57,10 +63,6 @@ public class OpenNLP {
                 }
             }
         }
-        String senteces[]=(sentenceDetector.sentDetect(input));
-        for(String s : senteces){
-            System.out.println(s);
-        }
     }
 
     public void Tokenizer(String input) throws FileNotFoundException{
@@ -68,11 +70,8 @@ public class OpenNLP {
             try{
                 TokenizerModel model = new TokenizerModel(modelIn);
                 Tokenizer tokenizer = new TokenizerME(model);
-                String[] tokens = tokenizer.tokenize(input);
+                tkns = tokenizer.tokenize(input);
 
-                for(String t : tokens){
-                    System.out.println(t);
-                }
             }catch(IOException e){
                 e.printStackTrace();
             }
