@@ -3,48 +3,44 @@
  */
 
 import jdk.internal.util.xml.impl.Input;
+import opennlp.tools.cmdline.PerformanceMonitor;
 import opennlp.tools.cmdline.postag.POSModelLoader;
 import opennlp.tools.postag.*;
 import opennlp.tools.sentdetect.*;
 import opennlp.tools.tokenize.*;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
+import opennlp.tools.util.ObjectStream;
+import opennlp.tools.util.PlainTextByLineStream;
+import java.io.StringReader;
+
+
 
 import java.io.*;
 public class OpenNLP {
-    POSModel model = null;
-    POSTagger posInstance = null;
 
+    public void POSTag(String input)throws IOException{
 
-    public void POSTags(String input) {
-        try {
-            if (model != null) {
-                POSTaggerME taggerME = new POSTaggerME(model);
-                if (taggerME != null) {
-                    String sentences = getSenteces(input);
-                    for (String sentence : sentences) {
-                        System.out.println("sentence : " + sentence);
-                    }
-                    for (String sentence : sentences) {
-                        String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(sentence);
-                        String[] tags = taggerME.tag(whitespaceTokenizerLine);
-                        for (int i = 0; i < whitespaceTokenizerLine.length; i++) {
-                            String word = whitespaceTokenizerLine[i].trim();
-                            String tag = tags[i].trim();
-                            System.out.println(word + " [" + tag + "]");
-                        }
-                    }
-                }
-                taggerME = null;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+        InputStream inputStream = new FileInputStream("en-pos-maxent.bin");
+        POSModel model = new POSModel(inputStream);
+        PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
+        POSTaggerME tagger = new POSTaggerME(model);
+
+        if(input != null) {
+            perfMon.start();
+            String whiteSpaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(input);
+            String tags[] = tagger.tag(whiteSpaceTokenizerLine);
+
+            POSSample sample = new POSSample(whiteSpaceTokenizerLine, tags);
+            System.out.println(sample.toString());
+            perfMon.incrementCounter();
+            perfMon.stopAndPrintFinalResult();
         }
     }
 
     public void SentenceSplitter(String input){
         SentenceDetectorME sentenceDetector = null;
         InputStream modelIn = null;
-
+        String[] result = null;
         try{
             modelIn = getClass().getResourceAsStream("en-sent.bin");
             final SentenceModel sentenceModel = new SentenceModel(modelIn);
