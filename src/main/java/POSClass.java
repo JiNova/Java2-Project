@@ -11,14 +11,15 @@ import java.io.*;
 
 public class POSClass {
     public String text;
-    public ArrayList<String[]> sentences;
+    public ArrayList<String> sentences;
     public ArrayList<String[]> tkns;
     public ArrayList<String[]> POStags;
 
     public POSClass(String s){
         text = s;
     }
-    public ArrayList<String[]> getSentences(){
+
+    public ArrayList<String> getSentences(){
         return sentences;
     }
 
@@ -38,7 +39,7 @@ public class POSClass {
             POSTaggerME tagger = new POSTaggerME(model);
 
 
-            for (String[] s : sentences) {
+            for (String s : sentences) {
                 String tags[] = tagger.tag(s);
                 POStags.add(tags);
             }
@@ -55,33 +56,31 @@ public class POSClass {
         }
     }
 
-    public void sentenceSplitter()throws FileNotFoundException{
+    public void sentenceSplitter()throws IOException {
         InputStream modelIn = getClass().getResourceAsStream("/en-sent.bin");
-        try{
+        try {
 
-            SentenceModel sentenceModel = new SentenceModel(modelIn);
+            final SentenceModel sentenceModel = new SentenceModel(modelIn);
             SentenceDetectorME sentenceDetector = new SentenceDetectorME(sentenceModel);
 
             String[] sent = sentenceDetector.sentDetect(text);
-            for(String s : sent){
-                sentences.add(s.split("[./?!]"));
+            for (String s : sent) {
+                sentences.add(s);
             }
 
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
-        catch (final IOException e){
-            e.printStackTrace();
-        }finally{
-            if(modelIn != null){
-                try{
-                    modelIn.close();
-                }catch (final IOException e){
+        }catch(final IOException e){
+                e.printStackTrace();
+            }finally{
+                if (modelIn != null) {
+                    try {
+                        modelIn.close();
+                    } catch (final IOException e) {
 
+                    }
                 }
             }
         }
-    }
+
 
     public void Tokenizer() throws FileNotFoundException{
         InputStream modelIn = getClass().getResourceAsStream("/en-token.bin");
