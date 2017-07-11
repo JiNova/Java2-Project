@@ -2,21 +2,13 @@
  * Created by Evo on 10.07.2017.
  */
 
-import jdk.internal.util.xml.impl.Input;
-import opennlp.tools.cmdline.PerformanceMonitor;
-import opennlp.tools.cmdline.postag.POSModelLoader;
 import opennlp.tools.postag.*;
 import opennlp.tools.sentdetect.*;
 import opennlp.tools.tokenize.*;
-import opennlp.tools.tokenize.WhitespaceTokenizer;
-import opennlp.tools.util.ObjectStream;
-import opennlp.tools.util.PlainTextByLineStream;
-import java.io.StringReader;
+
 import java.util.ArrayList;
-
-
-
 import java.io.*;
+
 public class POSClass {
     public String text;
     public ArrayList<String[]> sentences;
@@ -26,6 +18,18 @@ public class POSClass {
     public POSClass(String s){
         text = s;
     }
+    public ArrayList<String[]> getSentences(){
+        return sentences;
+    }
+
+    public ArrayList<String[]> getPOStags() {
+        return POStags;
+    }
+
+    public ArrayList<String[]> getTkns() {
+        return tkns;
+    }
+
     public void POSTag() {
 
         InputStream inputStream = getClass().getResourceAsStream("en-pos-maxent.bin");
@@ -51,7 +55,7 @@ public class POSClass {
         }
     }
 
-    public void sSplitter(text){
+    public void sentenceSplitter(text){
         InputStream modelIn = getClass().getResourceAsStream("en-sent.bin");
         try{
 
@@ -60,7 +64,7 @@ public class POSClass {
             SentenceDetectorME sentenceDetector = new SentenceDetectorME(sentenceModel);
 
 
-            String[] sent = sentenceDetector.sentDetect(input);
+            String[] sent = sentenceDetector.sentDetect(text);
             for(String s : sent){
                 sentences.add(s.split("[./?!]"));
             }
@@ -103,14 +107,16 @@ public class POSClass {
 
     public static void main(String[] args) throws FileNotFoundException {
         POSClass a = new POSClass("This is a test. Does it work? I hope so!");
-        a.sSplitter();
+        a.sentenceSplitter();
         try {
             a.Tokenizer();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         a.POSTag();
-
-        for(int i; i< sentences)
+        ArrayList<String[]> mySen = a.getSentences();
+        for(int i= 0; i < mySen.size() ;i++){
+            System.out.println(mySen.get(i).toString());
+        }
     }
 }
