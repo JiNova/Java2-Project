@@ -32,7 +32,7 @@ public class POSClass {
 
     public void POSTag() {
 
-        InputStream inputStream = getClass().getResourceAsStream("en-pos-maxent.bin");
+        InputStream inputStream = getClass().getResourceAsStream("/en-pos-maxent.bin");
         try {
             POSModel model = new POSModel(inputStream);
             POSTaggerME tagger = new POSTaggerME(model);
@@ -55,21 +55,22 @@ public class POSClass {
         }
     }
 
-    public void sentenceSplitter(text){
-        InputStream modelIn = getClass().getResourceAsStream("en-sent.bin");
+    public void sentenceSplitter()throws FileNotFoundException{
+        InputStream modelIn = getClass().getResourceAsStream("/en-sent.bin");
         try{
 
-            final SentenceModel sentenceModel = new SentenceModel(modelIn);
-            modelIn.close();
+            SentenceModel sentenceModel = new SentenceModel(modelIn);
             SentenceDetectorME sentenceDetector = new SentenceDetectorME(sentenceModel);
-
 
             String[] sent = sentenceDetector.sentDetect(text);
             for(String s : sent){
                 sentences.add(s.split("[./?!]"));
             }
 
-        }catch (final IOException e){
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+        catch (final IOException e){
             e.printStackTrace();
         }finally{
             if(modelIn != null){
@@ -83,12 +84,16 @@ public class POSClass {
     }
 
     public void Tokenizer() throws FileNotFoundException{
-        InputStream modelIn = getClass().getResourceAsStream("en-token.bin");
+        InputStream modelIn = getClass().getResourceAsStream("/en-token.bin");
             try{
                 TokenizerModel model = new TokenizerModel(modelIn);
                 Tokenizer tokenizer = new TokenizerME(model);
                 for(String[] s : sentences){
-                    tkns.add(s);
+                    for(int i = 0; i < s.length; i++){
+                        String r = s[i];
+                        String[] filler = tokenizer.tokenize(r);
+                        tkns.add(filler);
+                    }
                 }
 
             } catch(FileNotFoundException e){
@@ -105,15 +110,17 @@ public class POSClass {
             }
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         POSClass a = new POSClass("This is a test. Does it work? I hope so!");
-        a.sentenceSplitter();
+
         try {
+            a.sentenceSplitter();
             a.Tokenizer();
+            a.POSTag();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        a.POSTag();
+
         ArrayList<String[]> mySen = a.getSentences();
         for(int i= 0; i < mySen.size() ;i++){
             System.out.println(mySen.get(i).toString());
