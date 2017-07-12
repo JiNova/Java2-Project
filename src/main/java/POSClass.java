@@ -19,17 +19,6 @@ public class POSClass {
         text = s;
     }
 
-    public ArrayList<String> getSentences(){
-        return sentences;
-    }
-
-    public ArrayList<String[]> getPOStags() {
-        return POStags;
-    }
-
-    public ArrayList<String[]> getTkns() {
-        return tkns;
-    }
 
     public ArrayList<String[]> POSTag(ArrayList<String[]> input) {
 
@@ -58,7 +47,7 @@ public class POSClass {
     }
 
     public ArrayList<String> sentenceSplitter()throws IOException {
-        InputStream modelIn = getClass().getResourceAsStream("/en-sent.bin");
+        InputStream modelIn = getClass().getResourceAsStream("D://Proj/en-sent.bin");
         try {
 
             final SentenceModel sentenceModel = new SentenceModel(modelIn);
@@ -122,8 +111,8 @@ public class POSClass {
                 for(int j = 0; j < text.get(i).length(); j++){
                     String[] runner = tokens.get(i);
                     String[] rnr = tags.get(i);
-                    System.out.println(runner[j]);
-                    System.out.println(rnr[j]);
+                    System.out.print(runner[j]+"_");
+                    System.out.print(rnr[j]+" ");
                 }
             }
 
