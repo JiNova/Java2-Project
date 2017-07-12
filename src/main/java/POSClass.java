@@ -20,7 +20,7 @@ public class POSClass {
     }
 
 
-    public ArrayList<String[]> POSTag(ArrayList<String[]> input) {
+    public ArrayList<String[]> posTag(ArrayList<String[]> input) {
 
         InputStream inputStream = getClass().getResourceAsStream("/en-pos-maxent.bin");
         try {
@@ -47,7 +47,7 @@ public class POSClass {
     }
 
     public ArrayList<String> sentenceSplitter()throws IOException {
-        InputStream modelIn = getClass().getResourceAsStream("D://Proj/en-sent.bin");
+        InputStream modelIn = getClass().getResourceAsStream("en-sent.bin");
         try {
 
             final SentenceModel sentenceModel = new SentenceModel(modelIn);
@@ -105,7 +105,7 @@ public class POSClass {
         try {
            ArrayList<String> text = a.sentenceSplitter();
            ArrayList<String[]> tokens = a.tokenizer(text);
-           ArrayList<String[]> tags = a.POSTag(tokens);
+           ArrayList<String[]> tags = a.posTag(tokens);
 
             for(int i= 0; i < text.size() ;i++){
                 for(int j = 0; j < text.get(i).length(); j++){
