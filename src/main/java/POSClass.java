@@ -119,9 +119,14 @@ public class POSClass {
            ArrayList<String[]> tags = a.POSTag(tokens);
 
             for(int i= 0; i < text.size() ;i++){
-                for(int j = 0; j < text.get(i).length(); j++)
-                System.out.println(text.get(i).toString());
+                for(int j = 0; j < text.get(i).length(); j++){
+                    String[] runner = tokens.get(i);
+                    String[] rnr = tags.get(i);
+                    System.out.println(runner[j]);
+                    System.out.println(rnr[j]);
+                }
             }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
