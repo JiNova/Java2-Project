@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.io.*;
 
 public class POSClass {
-    public String text;
-    public ArrayList<String> sentences;
-    public ArrayList<String[]> tkns;
-    public ArrayList<String[]> POStags;
+    private String text;
+    private ArrayList<String> sentences;
+    private ArrayList<String[]> tkns;
+    private ArrayList<String[]> POStags;
 
     public POSClass(String s){
         text = s;
@@ -31,7 +31,7 @@ public class POSClass {
         return tkns;
     }
 
-    public void POSTag() {
+    public ArrayList<String[]> POSTag(ArrayList<String[]> input) {
 
         InputStream inputStream = getClass().getResourceAsStream("/en-pos-maxent.bin");
         try {
@@ -39,11 +39,11 @@ public class POSClass {
             POSTaggerME tagger = new POSTaggerME(model);
 
 
-            for (String s : sentences) {
+            for (String[] s : input) {
                 String tags[] = tagger.tag(s);
                 POStags.add(tags);
             }
-
+        return POStags;
         }catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -54,9 +54,10 @@ public class POSClass {
                 }
             }
         }
+        return null;
     }
 
-    public void sentenceSplitter()throws IOException {
+    public ArrayList<String> sentenceSplitter()throws IOException {
         InputStream modelIn = getClass().getResourceAsStream("/en-sent.bin");
         try {
 
@@ -64,36 +65,35 @@ public class POSClass {
             SentenceDetectorME sentenceDetector = new SentenceDetectorME(sentenceModel);
 
             String[] sent = sentenceDetector.sentDetect(text);
-            for (String s : sent) {
-                sentences.add(s);
+            for (int i=0; i < sent.length ; i++) {
+                sentences.add(sent[i]);
+                return sentences;
             }
 
         }catch(final IOException e){
-                e.printStackTrace();
-            }finally{
-                if (modelIn != null) {
-                    try {
-                        modelIn.close();
-                    } catch (final IOException e) {
+               e.printStackTrace();
+            }finally {
+            if (modelIn != null) {
+                try {
+                    modelIn.close();
+                } catch (final IOException e) {
 
-                    }
                 }
             }
+        }return null;
         }
 
 
-    public void Tokenizer() throws FileNotFoundException{
+    public ArrayList<String[]> tokenizer(ArrayList<String> input) throws FileNotFoundException{
         InputStream modelIn = getClass().getResourceAsStream("/en-token.bin");
             try{
                 TokenizerModel model = new TokenizerModel(modelIn);
                 Tokenizer tokenizer = new TokenizerME(model);
-                for(String[] s : sentences){
-                    for(int i = 0; i < s.length; i++){
-                        String r = s[i];
-                        String[] filler = tokenizer.tokenize(r);
+                    for(int i = 0; i < input.size(); i++){
+                        String[] filler = tokenizer.tokenize(input.get(i));
                         tkns.add(filler);
                     }
-                }
+                return tkns;
 
             } catch(FileNotFoundException e){
                 e.printStackTrace();
@@ -107,22 +107,28 @@ public class POSClass {
                     }
                 }
             }
+            return null;
     }
 
     public static void main(String[] args) {
         POSClass a = new POSClass("This is a test. Does it work? I hope so!");
 
         try {
-            a.sentenceSplitter();
-            a.Tokenizer();
-            a.POSTag();
+           ArrayList<String> text = a.sentenceSplitter();
+           ArrayList<String[]> tokens = a.tokenizer(text);
+           ArrayList<String[]> tags = a.POSTag(tokens);
+
+            for(int i= 0; i < text.size() ;i++){
+                for(int j = 0; j < text.get(i).length(); j++)
+                System.out.println(text.get(i).toString());
+            }
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        ArrayList<String[]> mySen = a.getSentences();
-        for(int i= 0; i < mySen.size() ;i++){
-            System.out.println(mySen.get(i).toString());
-        }
+
+
     }
 }
