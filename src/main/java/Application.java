@@ -1,4 +1,4 @@
-package PACKAGE_NAME;
+package main;
 
 /**
  * Created by andy on 10.07.17.
