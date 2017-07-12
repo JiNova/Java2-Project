@@ -17,12 +17,15 @@ public class POSClass {
 
     public POSClass(String s){
         text = s;
+        sentences = new ArrayList<String>();
+        tkns = new ArrayList<String[]>();
+        POStags = new ArrayList<String[]>();
     }
 
 
-    public ArrayList<String[]> posTag(ArrayList<String[]> input) {
+    public ArrayList<String[]> posTag(ArrayList<String[]> input) throws FileNotFoundException {
 
-        InputStream inputStream = getClass().getResourceAsStream("/en-pos-maxent.bin");
+        InputStream inputStream = new FileInputStream("en-pos-maxent.bin");
         try {
             POSModel model = new POSModel(inputStream);
             POSTaggerME tagger = new POSTaggerME(model);
@@ -47,7 +50,7 @@ public class POSClass {
     }
 
     public ArrayList<String> sentenceSplitter()throws IOException {
-        InputStream modelIn = getClass().getResourceAsStream("en-sent.bin");
+        InputStream modelIn = new FileInputStream("en-sent.bin");
         try {
 
             final SentenceModel sentenceModel = new SentenceModel(modelIn);
@@ -56,9 +59,9 @@ public class POSClass {
             String[] sent = sentenceDetector.sentDetect(text);
             for (int i=0; i < sent.length ; i++) {
                 sentences.add(sent[i]);
-                return sentences;
-            }
 
+            }
+            return sentences;
         }catch(final IOException e){
                e.printStackTrace();
             }finally {
@@ -74,7 +77,7 @@ public class POSClass {
 
 
     public ArrayList<String[]> tokenizer(ArrayList<String> input) throws FileNotFoundException{
-        InputStream modelIn = getClass().getResourceAsStream("/en-token.bin");
+        InputStream modelIn = new FileInputStream("en-token.bin");
             try{
                 TokenizerModel model = new TokenizerModel(modelIn);
                 Tokenizer tokenizer = new TokenizerME(model);
@@ -108,9 +111,10 @@ public class POSClass {
            ArrayList<String[]> tags = a.posTag(tokens);
 
             for(int i= 0; i < text.size() ;i++){
-                for(int j = 0; j < text.get(i).length(); j++){
-                    String[] runner = tokens.get(i);
-                    String[] rnr = tags.get(i);
+                String[] runner = tokens.get(i);
+                String[] rnr = tags.get(i);
+                for(int j = 0; j < tokens.get(i).length; j++){
+
                     System.out.print(runner[j]+"_");
                     System.out.print(rnr[j]+" ");
                 }
