@@ -8,6 +8,7 @@ import opennlp.tools.tokenize.*;
 
 import java.util.ArrayList;
 import java.io.*;
+import java.util.HashMap;
 
 public class POSClass {
     private String text;
@@ -22,7 +23,12 @@ public class POSClass {
         POStags = new ArrayList<String[]>();
     }
 
-
+    /**
+     * Method to get tags of tokens
+     * @param input tokens of the text
+     * @return ArrayList of StringArrays that is filled with all tags
+     * @throws FileNotFoundException
+     */
     public ArrayList<String[]> posTag(ArrayList<String[]> input) throws FileNotFoundException {
 
         InputStream inputStream = new FileInputStream("en-pos-maxent.bin");
@@ -49,6 +55,11 @@ public class POSClass {
         return null;
     }
 
+    /**
+     * Method to split all sentences in the text to a ArrayList
+     * @return ArrayList with all sentences of the text
+     * @throws IOException
+     */
     public ArrayList<String> sentenceSplitter()throws IOException {
         InputStream modelIn = new FileInputStream("en-sent.bin");
         try {
@@ -75,7 +86,12 @@ public class POSClass {
         }return null;
         }
 
-
+    /**
+     * tokenizes all senteces into single words(tokens)
+     * @param input the sentences
+     * @return  ArrayList of StringArrays which contains all tokens of the sentences
+     * @throws FileNotFoundException
+     */
     public ArrayList<String[]> tokenizer(ArrayList<String> input) throws FileNotFoundException{
         InputStream modelIn = new FileInputStream("en-token.bin");
             try{
@@ -102,6 +118,56 @@ public class POSClass {
             return null;
     }
 
+    /**
+     * Returns a String of all words of the text in the same order as well as the tags
+     * @param tokensToPrint get all tokens of the text
+     * @param tagsToPrint   get all tags of the tokens
+     * @return a String to see the input text of the beginning with all its tags
+     */
+    public String printIt(ArrayList<String[]> tokensToPrint, ArrayList<String[]> tagsToPrint){
+        String result = "";
+
+        if(tokensToPrint != null && tagsToPrint!=null){
+            for(int i=0;i < sentences.size();i++){
+                for(int j=0;j<tokensToPrint.get(i).length;j++){
+                    result += tokensToPrint.get(i).clone()[j] + "_" + tagsToPrint.get(i).clone()[j] + " ";
+                }
+            }
+            return result;
+        }
+        return null;
+    }
+
+    /**
+     * Method to fill a HashMap with our tokens and tags
+     * @param tokensHashMap tokens of our text
+     * @param tagsHashMap   POStags of the the tokens
+     * @return a hashMap with tokens as keys and tags as values
+     */
+    public HashMap<String, ArrayList<String>> fillHashMap(ArrayList<String[]> tokensHashMap, ArrayList<String[]> tagsHashMap){
+
+        HashMap<String, ArrayList<String>> resultMap = new HashMap<String, ArrayList<String>>(150);
+
+        if(tokensHashMap != null && tagsHashMap != null){
+            for(int i=0;i < sentences.size();i++){
+                for(int j=0;j < tokensHashMap.get(i).length;j++){
+                    String key = tokensHashMap.get(i).clone()[j];
+                    String value = tagsHashMap.get(i).clone()[j];
+                    if(resultMap.containsKey(tokensHashMap.get(i).clone()[j])) {
+                        resultMap.get(key).add(value);
+                    }else{
+                        ArrayList<String> valueList = new ArrayList<String>();
+                        valueList.add(value);
+                        resultMap.put(key, valueList);
+                    }
+                }
+            }
+            return resultMap;
+        }
+        return null;
+    }
+
+
     public static void main(String[] args) {
         POSClass a = new POSClass("This is a test. Does it work? I hope so!");
 
@@ -109,15 +175,21 @@ public class POSClass {
            ArrayList<String> text = a.sentenceSplitter();
            ArrayList<String[]> tokens = a.tokenizer(text);
            ArrayList<String[]> tags = a.posTag(tokens);
+           System.out.println(a.printIt(tokens, tags));
 
-            for(int i= 0; i < text.size() ;i++){
-                String[] runner = tokens.get(i);
-                String[] rnr = tags.get(i);
-                for(int j = 0; j < tokens.get(i).length; j++){
+           
+           HashMap<String, ArrayList<String>> hashTest = a.fillHashMap(tokens, tags);
 
-                    System.out.print(runner[j]+"_");
-                    System.out.print(rnr[j]+" ");
-                }
+
+           /*OK so we Have a HashMap with all tokens and tags, but printing it doesn't help us
+            the way the map is getting filled is completely random*/
+           for (String name: hashTest.keySet()){
+
+                String key =name.toString();
+                String value = hashTest.get(name).toString();
+                System.out.print(key + "_" + value.substring(1, value.length()- 1) + " ");
+
+
             }
 
         } catch (FileNotFoundException e) {
