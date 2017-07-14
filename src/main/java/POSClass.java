@@ -29,7 +29,7 @@ public class POSClass {
      * @return ArrayList of StringArrays that is filled with all tags
      * @throws FileNotFoundException
      */
-    public ArrayList<String[]> posTag(ArrayList<String[]> input) throws FileNotFoundException {
+    public ArrayList<String[]> getPosTag(ArrayList<String[]> input) throws FileNotFoundException {
 
         InputStream inputStream = new FileInputStream("en-pos-maxent.bin");
         try {
@@ -60,7 +60,7 @@ public class POSClass {
      * @return ArrayList with all sentences of the text
      * @throws IOException
      */
-    public ArrayList<String> sentenceSplitter()throws IOException {
+    private ArrayList<String> sentenceSplitter()throws IOException {
         InputStream modelIn = new FileInputStream("en-sent.bin");
         try {
 
@@ -92,7 +92,7 @@ public class POSClass {
      * @return  ArrayList of StringArrays which contains all tokens of the sentences
      * @throws FileNotFoundException
      */
-    public ArrayList<String[]> tokenizer(ArrayList<String> input) throws FileNotFoundException{
+    private ArrayList<String[]> tokenizer(ArrayList<String> input) throws FileNotFoundException{
         InputStream modelIn = new FileInputStream("en-token.bin");
             try{
                 TokenizerModel model = new TokenizerModel(modelIn);
@@ -174,7 +174,7 @@ public class POSClass {
         try {
            ArrayList<String> text = a.sentenceSplitter();
            ArrayList<String[]> tokens = a.tokenizer(text);
-           ArrayList<String[]> tags = a.posTag(tokens);
+           ArrayList<String[]> tags = a.getPosTag(tokens);
            System.out.println(a.printIt(tokens, tags));
 
            
