@@ -1,4 +1,4 @@
-package proj;
+package main;
 
 import java.io.IOException;
 import javafx.application.Application;
