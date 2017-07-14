@@ -9,16 +9,16 @@ import opennlp.tools.tokenize.*;
 import java.util.ArrayList;
 import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 
-public class POSClass {
+public class Parser
+{
     private String text;
-    private ArrayList<String> sentences;
     private ArrayList<String[]> tkns;
     private ArrayList<String[]> POStags;
 
-    public POSClass(String s){
+    public Parser(String s){
         text = s;
-        sentences = new ArrayList<String>();
         tkns = new ArrayList<String[]>();
         POStags = new ArrayList<String[]>();
     }
@@ -29,22 +29,25 @@ public class POSClass {
      * @return ArrayList of StringArrays that is filled with all tags
      * @throws FileNotFoundException
      */
-    public ArrayList<String[]> getPosTag(ArrayList<String[]> input) throws FileNotFoundException {
+    public static String[] getPosTag(String[] input)
+    {
+        InputStream inputStream = null;
 
-        InputStream inputStream = new FileInputStream("en-pos-maxent.bin");
-        try {
+        try
+        {
+            inputStream = new FileInputStream("en-pos-maxent.bin");
             POSModel model = new POSModel(inputStream);
             POSTaggerME tagger = new POSTaggerME(model);
 
 
-            for (String[] s : input) {
-                String tags[] = tagger.tag(s);
-                POStags.add(tags);
-            }
-        return POStags;
-        }catch (IOException e) {
+            return tagger.tag(input);
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
-        } finally {
+        }
+        finally
+        {
             if (inputStream != null) {
                 try {
                     inputStream.close();
@@ -60,7 +63,9 @@ public class POSClass {
      * @return ArrayList with all sentences of the text
      * @throws IOException
      */
-    private ArrayList<String> sentenceSplitter()throws IOException {
+    private ArrayList<String> sentenceSplitter()throws IOException
+    {
+        ArrayList<String> sentences = new ArrayList<String>();
         InputStream modelIn = new FileInputStream("en-sent.bin");
         try {
 
@@ -124,56 +129,49 @@ public class POSClass {
      * @param tagsToPrint   get all tags of the tokens
      * @return a String to see the input text of the beginning with all its tags
      */
-    public String printIt(ArrayList<String[]> tokensToPrint, ArrayList<String[]> tagsToPrint){
-        String result = "";
-
-        if(tokensToPrint != null && tagsToPrint!=null){
-            for(int i=0;i < sentences.size();i++){
-                for(int j=0;j<tokensToPrint.get(i).length;j++){
-                    result += tokensToPrint.get(i).clone()[j] + "_" + tagsToPrint.get(i).clone()[j] + " ";
-                }
-            }
-            return result;
-        }
-        return null;
-    }
-
-    /**
-     * Method to fill a HashMap with our tokens and tags
-     * @param tokensHashMap tokens of our text
-     * @param tagsHashMap   POStags of the the tokens
-     * @return a hashMap with tokens as keys and tags as values
-     */
-    public HashMap<String, ArrayList<String>> fillHashMap(ArrayList<String[]> tokensHashMap, ArrayList<String[]> tagsHashMap){
-
-        HashMap<String, ArrayList<String>> resultMap = new HashMap<String, ArrayList<String>>(150);
-
-        if(tokensHashMap != null && tagsHashMap != null){
-            for(int i=0;i < sentences.size();i++){
-                for(int j=0;j < tokensHashMap.get(i).length;j++){
-                    String key = tokensHashMap.get(i).clone()[j];
-                    String value = tagsHashMap.get(i).clone()[j];
-                    if(resultMap.containsKey(tokensHashMap.get(i).clone()[j])) {
-                        resultMap.get(key).add(value);
-                    }else{
-                        ArrayList<String> valueList = new ArrayList<String>();
-                        valueList.add(value);
-                        resultMap.put(key, valueList);
-                    }
-                }
-            }
-            return resultMap;
-        }
-        return null;
-    }
+//    public String printIt(ArrayList<String[]> tokensToPrint, ArrayList<String[]> tagsToPrint){
+//        String result = "";
+//
+//        if(tokensToPrint != null && tagsToPrint!=null){
+//            for(int i=0;i < sentences.size();i++){
+//                for(int j=0;j<tokensToPrint.get(i).length;j++){
+//                    result += tokensToPrint.get(i).clone()[j] + "_" + tagsToPrint.get(i).clone()[j] + " ";
+//                }
+//            }
+//            return result;
+//        }
+//        return null;
+//    }
 
 
     public void parse() throws IOException {
-        POSClass a = new POSClass("This is a test. Does it work? I hope so!");
+//        Parser a = new Parser("This is a test. Does it work? I hope so!");
+//
+//           ArrayList<String> text = a.sentenceSplitter();
+//           ArrayList<String[]> tokens = a.tokenizer(text);
+//           ArrayList<String[]> tags = a.getPosTag(tokens);
+//           System.out.println(a.printIt(tokens, tags));
+    }
 
-           ArrayList<String> text = a.sentenceSplitter();
-           ArrayList<String[]> tokens = a.tokenizer(text);
-           ArrayList<String[]> tags = a.getPosTag(tokens);
-           System.out.println(a.printIt(tokens, tags));
+    public static Map<String, String> getWordsTag(String[] words)
+    {
+        Map<String, String> results = new HashMap<String, String>();
+
+        String[] tags = getPosTag(words);
+
+        if (words.length != tags.length)
+        {
+            //We done goofed
+            return null;
+        }
+        else
+        {
+            for (int i = 0; i < words.length; i ++)
+            {
+                results.put(words[i], tags[i]);
+            }
+
+            return results;
+        }
     }
 }
