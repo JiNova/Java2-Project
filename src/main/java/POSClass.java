@@ -168,37 +168,12 @@ public class POSClass {
     }
 
 
-    public static void main(String[] args) {
+    public void parse() throws IOException {
         POSClass a = new POSClass("This is a test. Does it work? I hope so!");
 
-        try {
            ArrayList<String> text = a.sentenceSplitter();
            ArrayList<String[]> tokens = a.tokenizer(text);
            ArrayList<String[]> tags = a.getPosTag(tokens);
            System.out.println(a.printIt(tokens, tags));
-
-           
-           HashMap<String, ArrayList<String>> hashTest = a.fillHashMap(tokens, tags);
-
-
-           /*OK so we Have a HashMap with all tokens and tags, but printing it doesn't help us
-            the way the map is getting filled is completely random*/
-           for (String name: hashTest.keySet()){
-
-                String key =name.toString();
-                String value = hashTest.get(name).toString();
-                System.out.print(key + "_" + value.substring(1, value.length()- 1) + " ");
-
-
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
     }
 }

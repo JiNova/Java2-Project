@@ -30,10 +30,10 @@ public class Searcher {
 
     /**
      * Constructor (?) that sets targetWord to empty String
-     *
      * @param word the word that is being looked for
      */
     public Searcher(targetWord) {
+
         targetWord = "";
     }
 
@@ -42,33 +42,58 @@ public class Searcher {
      * return null if no sentence was found with the word
      * return sentences in which word occurs
      */
-    public void searchForTarget() {
-        ArrayList<String> sentenceList = ??.getSentences();
-        //use arrayList sentence
-        //search if the sentences contain target word
-        //if yes, return the sentence it appears in and put the target word in all capital letters
-        //if not, return message with info
+    public void searchForTarget() throws IOException {
 
-        //if XY contains targetWord DO SOMETHING
-    }
+        BufferedReader br = new BufferedReader(new FileReader("text.txt"));
+        String[] wordsOnLine;
+        String line;
+        String targetWord="";
+        ArrayList<SearchResult> foundTarget = new ArrayList<SearchResult>();
 
-    /**
-     * count occurences of the targetWord in whole text
-     */
-    public void countOccurenceOfTarget() {
-        //count how often target word appeared in total
-            while (!found) {
-                //go through arraylist
-                //if find word, found = true
-                //count how often word is found
-                //if can't find word
+        while((line = br.readLine()) != null){
+            String sentence = line;
+            wordsOnLine = line.split("\\s"); //split the line into separate words
+
+            for (int i = 0; i < wordsOnLine.length; i++){
+                if(wordsOnLine[i].equalsIgnoreCase(targetWord)){
+                   SearchResult result = new SearchResult(targetWord, sentence);
+                   foundTarget.add(result);
+                }
             }
     }
+
+    //mit in die methode oben packen
+
+    /**
+     * Count occurences of the targetWord in a text
+     * @param targetWord the word to count
+     * @param file the text to search the word in
+     * @return return the count of the word
+     */
+    public int countOccurenceOfTarget(String targetWord, File file) throws FileNotFoundException {
+        //count how often target word appeared in total
+        {
+            int count = 0;
+            targetWord = targetWord.trim();
+            //BufferedReader benutzen
+            Scanner scanner = new Scanner(new FileReader(file));
+
+            while (scanner.hasNext())
+            {
+                String nextWord = scanner.next().trim();
+                if (nextWord.equals(targetWord)) {
+                    ++count;
+                }
+            }
+            return count;
+        }
+    }
+
 
     /**
      * get the tag for the targetWord
      */
-    public void getTargetTag() {
+    public void getTargetTag(String targetWord) {
         //get the tag for the target word for each sentence it appears in
         //save them somewhere so we can show them to the user later
         //maybe put in a list or something?
