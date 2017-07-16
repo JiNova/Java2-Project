@@ -2,13 +2,19 @@
  * Created by Evo on 10.07.2017.
  */
 
+import opennlp.tools.lemmatizer.DictionaryLemmatizer;
+import opennlp.tools.lemmatizer.Lemmatizer;
+import opennlp.tools.lemmatizer.LemmatizerME;
+import opennlp.tools.lemmatizer.LemmatizerModel;
 import opennlp.tools.postag.*;
 import opennlp.tools.sentdetect.*;
 import opennlp.tools.tokenize.*;
+import opennlp.tools.util.InvalidFormatException;
 
 import java.util.ArrayList;
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 
 public class POSClass {
     private String text;
@@ -167,6 +173,27 @@ public class POSClass {
         return null;
     }
 
+    public String[] dictLemmatizer(ArrayList<String[]> tokenInput, ArrayList<String[]> tagsInput) throws FileNotFoundException {
+        InputStream modelIn = new FileInputStream("en-lemmatizer.bin");
+        String[] lemmas = null;
+        try {
+            DictionaryLemmatizer lemmatizer = new DictionaryLemmatizer(modelIn);
+            if(tokenInput != null && tagsInput != null) {
+                for (int i = 0; i < tokenInput.size(); i++) {
+                    String[] tokenArray = tokenInput.get(i);
+                    String[] tagArray = tagsInput.get(i);
+                    lemmas = lemmatizer.lemmatize(tokenArray, tagArray);
+                }
+                return lemmas;
+            }
+            else{
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public static void main(String[] args) {
         POSClass a = new POSClass("This is a test. Does it work? I hope so!");
