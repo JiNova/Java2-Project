@@ -1,3 +1,5 @@
+package backend;
+
 /**
  * Created by Evo on 10.07.2017.
  */
@@ -66,7 +68,9 @@ public class Parser {
      * @return ArrayList of StringArrays which contains all tokens of the sentences
      * @throws FileNotFoundException
      */
-    public static String[] tokenizer(String input) {
+    public static String[] tokenizer(String input)
+    {
+        System.out.println("Tokenizing...");
         InputStream modelIn = null;
         try {
             modelIn = new FileInputStream("en-token.bin");
@@ -96,7 +100,7 @@ public class Parser {
      * @param tagsToPrint   get all tags of the tokens
      * @return a String to see the input text of the beginning with all its tags
      */
-//    public String printIt(ArrayList<String[]> tokensToPrint, ArrayList<String[]> tagsToPrint){
+//    public String toString(ArrayList<String[]> tokensToPrint, ArrayList<String[]> tagsToPrint){
 //        String result = "";
 //
 //        if(tokensToPrint != null && tagsToPrint!=null){
@@ -110,15 +114,6 @@ public class Parser {
 //        return null;
 //    }
 
-
-//    public void parse() throws IOException {
-////        Parser a = new Parser("This is a test. Does it work? I hope so!");
-////
-////           ArrayList<String> text = a.sentenceSplitter();
-////           ArrayList<String[]> tokens = a.tokenizer(text);
-////           ArrayList<String[]> tags = a.getPosTag(tokens);
-////           System.out.println(a.printIt(tokens, tags));
-//    }
     public static Map<String, String> getWordsTag(String[] words) {
         Map<String, String> results = new HashMap<String, String>();
 
@@ -142,23 +137,25 @@ public class Parser {
      * @return ArrayList with all sentences of the text
      * @throws IOException
      */
-    public ArrayList<String> sentenceSplitter() throws IOException {
-        ArrayList<String> sentences = new ArrayList<String>();
+    public static String[] sentenceSplitter(final String text) throws IOException
+    {
+        System.out.println("Splitting sentences...");
         InputStream modelIn = new FileInputStream("en-sent.bin");
         try {
 
             final SentenceModel sentenceModel = new SentenceModel(modelIn);
             SentenceDetectorME sentenceDetector = new SentenceDetectorME(sentenceModel);
 
-            String[] sent = sentenceDetector.sentDetect(text);
-            for (int i = 0; i < sent.length; i++) {
-                sentences.add(sent[i]);
+            String[] sentences = sentenceDetector.sentDetect(text);
 
-            }
             return sentences;
-        } catch (final IOException e) {
+        }
+        catch (final IOException e)
+        {
             e.printStackTrace();
-        } finally {
+        }
+        finally
+        {
             if (modelIn != null) {
                 try {
                     modelIn.close();
