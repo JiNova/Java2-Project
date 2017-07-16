@@ -142,7 +142,7 @@ public class Parser {
      * @return ArrayList with all sentences of the text
      * @throws IOException
      */
-    private ArrayList<String> sentenceSplitter() throws IOException {
+    public ArrayList<String> sentenceSplitter() throws IOException {
         ArrayList<String> sentences = new ArrayList<String>();
         InputStream modelIn = new FileInputStream("en-sent.bin");
         try {
