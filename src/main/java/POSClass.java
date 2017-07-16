@@ -124,7 +124,7 @@ public class POSClass {
      * @param tagsToPrint   get all tags of the tokens
      * @return a String to see the input text of the beginning with all its tags
      */
-    public String toString(ArrayList<String[]> tokensToPrint, ArrayList<String[]> tagsToPrint){
+    public String printIt(ArrayList<String[]> tokensToPrint, ArrayList<String[]> tagsToPrint){
         String result = "";
 
         if(tokensToPrint != null && tagsToPrint!=null){
@@ -175,9 +175,9 @@ public class POSClass {
            ArrayList<String> text = a.sentenceSplitter();
            ArrayList<String[]> tokens = a.tokenizer(text);
            ArrayList<String[]> tags = a.posTag(tokens);
-           System.out.println(a.toString(tokens, tags));
+           System.out.println(a.printIt(tokens, tags));
 
-
+           
            HashMap<String, ArrayList<String>> hashTest = a.fillHashMap(tokens, tags);
 
 
