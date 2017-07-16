@@ -44,29 +44,29 @@ public class Searcher {
      */
     public void searchForTarget() throws IOException {
 
-        BufferedReader br = new BufferedReader(new FileReader("text.txt"));
-        String[] wordsOnLine;
-        String line;
+        //BufferedReader br = new BufferedReader(new FileReader("text.txt"));
+        //String[] wordsOnLine;
+        //String line;
         String targetWord = "";
         ArrayList<SearchResult> foundTarget = new ArrayList<SearchResult>();
+        ArrayList<String> sentences = Parser.sentenceSplitter();
+        while (sentences != null) {
 
-        while ((line = br.readLine()) != null) {
-            String sentence = line;
-            wordsOnLine = line.split("\\s"); //split the line into separate words
+            //wordsOnLine = line.split("\\s"); //split the line into separate words
 
-            for (int i = 0; i < wordsOnLine.length; i++) {
-                if (wordsOnLine[i].equalsIgnoreCase(targetWord)) {
-                    SearchResult result = new SearchResult(targetWord, sentence);
+            for (int i = 0; i < sentences.size(); i++) {
+                if (sentences.get(i).equalsIgnoreCase(targetWord)) {
+                    SearchResult result = new SearchResult(targetWord, sentences);
 
                     String precWord = "";
                     String folWord = "";
 
                     if (i != 0) { //wenn wort nicht am satzanfang ist
-                        precWord = wordsOnLine[i - 1];
+                        precWord = sentences.get(i - 1);
                     }
 
-                    if (i + 1 != wordsOnLine.length) { //wenn i+1 nicht das ende von dem array ist
-                        folWord = wordsOnLine[i + 1];
+                    if (i + 1 != sentences.size()) { //wenn i+1 nicht das ende von dem array ist
+                        folWord = sentences.get(i + 1);
                     }
 
                     String words[] = {precWord, targetWord, folWord};
@@ -111,23 +111,6 @@ public class Searcher {
 
 
     /**
-     * get the tag for the targetWord
-     */
-    public void getTags(String[] tags) {
-
-        //use getWordsTag from Parser
-        //targetWord is the key, tag values
-        word -> tag;
-        prec -> tag;
-        fol -> tag;
-
-        return tag vom word
-        //get the tag for the target word for each sentence it appears in
-        //save them somewhere so we can show them to the user later
-        //maybe put in a list or something?
-    }
-
-    /**
      * get occurences of the tags the target appears in
      * eg:  NN  20      VP  10
      */
@@ -143,13 +126,5 @@ public class Searcher {
 
     }
 
-    /**
-     * get all the following tags of the occurence of the word
-     */
-    public void getFollowingTag() {
-        //for each occurence of the word get the tag of the following word
-        //save in another hasmap?
+}
 
-    }
-}
-}
