@@ -22,7 +22,8 @@ public class Sentence {
     public Sentence(final int id, final SearchResult searchResult)
     {
         this.id.set(Integer.toString(id));
-        this.sentence.set(searchResult.getTargetInSentence());
+//        this.sentence.set(searchResult.getTargetInSentence());
+        this.sentence.set(searchResult.getTargetInSentenceShort(2));
         this.posTag.set(searchResult.getTargetTag());
         this.preTag.set(searchResult.getPrecTag());
         this.folTag.set(searchResult.getFolTag());

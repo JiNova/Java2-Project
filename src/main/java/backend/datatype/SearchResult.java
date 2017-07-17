@@ -5,15 +5,17 @@ package backend.datatype;
  */
 public class SearchResult
 {
-    private String targetWord;
-    private String targetSentence;
-    private String[] sentenceParts;
-    private String targetTag;
-    private String precTag;
-    private String folTag;
+    private int         wordId;
+    private String      targetWord;
+    private String      targetSentence;
+    private String[]    sentenceParts;
+    private String      targetTag;
+    private String      precTag;
+    private String      folTag;
 
-    public SearchResult(final String targetWord, final String targetSentence, final String[] sentenceParts)
+    public SearchResult(final int wordId, final String targetWord, final String targetSentence, final String[] sentenceParts)
     {
+        this.wordId = wordId;
         this.targetWord = targetWord;
         this.sentenceParts = sentenceParts;
         this.targetSentence = targetSentence.replaceAll(targetWord, "%w");
@@ -64,10 +66,25 @@ public class SearchResult
         return this.getTargetSentence().replaceAll("%w", this.targetWord);
     }
 
-    public String getTargetInSentenceShort() {
+    public String getTargetInSentenceShort(final int neighbours) {
 
-        String sentence = this.targetSentence.replaceAll("")
-        sentence = this.getTargetSentence().replaceAll("%w", this.getTargetWord());
-        return
+        int maxPreNeighborId = this.wordId - neighbours;
+        int maxFolNeighborId = this.wordId + neighbours;
+
+        while (maxPreNeighborId < 0)
+        {
+            ++maxPreNeighborId;
+        }
+
+        while (maxFolNeighborId > (this.sentenceParts.length - 1))
+        {
+            --maxFolNeighborId;
+        }
+
+        int preSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxPreNeighborId]);
+        int folSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxFolNeighborId]);
+        String sentence = this.targetSentence.substring(preSentenceId, folSentenceId).replaceAll("%w", this.targetWord);
+
+        return (maxPreNeighborId > 0 ? "[..] " : "") + sentence + (maxFolNeighborId < this.sentenceParts.length - 1 ? " [..]" : "");
     }
 }

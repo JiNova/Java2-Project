@@ -42,50 +42,76 @@ public class Searcher {
 
         System.out.println("Searching for " +targetWord);
 
-        BufferedReader br = new BufferedReader(new FileReader("text.txt"));
-        String[] wordsOnLine;
-        String line;
-        ArrayList<SearchResult> foundTargets = new ArrayList<SearchResult>();
+        BufferedReader br = null;
 
-        while ((line = br.readLine()) != null)
-        {
-            String[] sentences = Parser.sentenceSplitter(line);
+        try {
+            br = new BufferedReader(new FileReader("text.txt"));
 
-            for (int sentenceId = 0 ; sentenceId < sentences.length; sentenceId ++) {
+            String[] wordsOnLine;
+            String line;
+            ArrayList<SearchResult> foundTargets = new ArrayList<SearchResult>();
 
-                if (StringUtils.containsIgnoreCase(sentences[sentenceId], targetWord)) {
-                    wordsOnLine = Parser.tokenizer(sentences[sentenceId]); //split the line into separate words
+            while ((line = br.readLine()) != null) {
+                String[] sentences = Parser.sentenceSplitter(line);
 
-                    for (int i = 0; i < wordsOnLine.length; i++) {
-                        if (wordsOnLine[i].equalsIgnoreCase(targetWord)) {
-                            SearchResult result = new SearchResult(targetWord, sentences[sentenceId], wordsOnLine);
+                for (int sentenceId = 0; sentenceId < sentences.length; sentenceId++) {
 
-                            String precWord = "";
-                            String folWord = "";
+                    if (StringUtils.containsIgnoreCase(sentences[sentenceId], targetWord)) {
+                        wordsOnLine = Parser.tokenizer(sentences[sentenceId]); //split the line into separate words
 
-                            if (i != 0) { //wenn wort nicht am satzanfang ist
-                                precWord = wordsOnLine[i - 1];
+                        for (int i = 0; i < wordsOnLine.length; i++) {
+                            if (wordsOnLine[i].equalsIgnoreCase(targetWord)) {
+                                SearchResult result = new SearchResult(i, wordsOnLine[i], sentences[sentenceId], wordsOnLine);
+
+                                String precWord = "";
+                                String folWord = "";
+
+                                if (i != 0) { //wenn wort nicht am satzanfang ist
+                                    precWord = wordsOnLine[i - 1];
+                                }
+
+                                if (i + 1 != wordsOnLine.length) { //wenn i+1 nicht das ende von dem array ist
+                                    folWord = wordsOnLine[i + 1];
+                                }
+
+                                String words[] = {precWord, targetWord, folWord};
+                                Map<String, String> wordsAndTags = Parser.getWordsTag(words);
+
+                                result.setTargetTag(wordsAndTags.get(targetWord));
+                                result.setPrecTag(wordsAndTags.get(precWord));
+                                result.setFolTag(wordsAndTags.get(folWord));
+
+                                foundTargets.add(result);
                             }
-
-                            if (i + 1 != wordsOnLine.length) { //wenn i+1 nicht das ende von dem array ist
-                                folWord = wordsOnLine[i + 1];
-                            }
-
-                            String words[] = {precWord, targetWord, folWord};
-                            Map<String, String> wordsAndTags = Parser.getWordsTag(words);
-
-                            result.setTargetTag(wordsAndTags.get(targetWord));
-                            result.setPrecTag(wordsAndTags.get(precWord));
-                            result.setFolTag(wordsAndTags.get(folWord));
-
-                            foundTargets.add(result);
                         }
                     }
                 }
             }
-        }
 
-        return foundTargets;
+            return foundTargets;
+        }
+        catch (FileNotFoundException e)
+        {
+            throw new FileNotFoundException("Could not find file");
+        }
+        catch (IOException e)
+        {
+            throw new IOException("Error while accessing file");
+        }
+        finally
+        {
+            if (br != null)
+            {
+                try
+                {
+                    br.close();
+                }
+                catch (IOException e)
+                {
+                    throw new IOException("Could not close BufferedReader");
+                }
+            }
+        }
     }
 
     //mit in die methode oben packen
