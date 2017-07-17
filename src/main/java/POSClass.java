@@ -194,7 +194,7 @@ public class POSClass {
         }
         return null;
     }
-
+   /*
     public String dictLemma(String tokenSt, String tagSt)throws FileNotFoundException{
         InputStream modelIn = new FileInputStream("en-lemmatizer.bin");
         String lemma="";
@@ -205,7 +205,7 @@ public class POSClass {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
     public static void main(String[] args) {
         POSClass a = new POSClass("This is a test. Does it work? I hope so!");
