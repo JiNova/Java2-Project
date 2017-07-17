@@ -41,22 +41,22 @@ public class Parser {
     public static String[] getPosTag(String[] input) {
         InputStream inputStream = null;
 
-        try {
-            inputStream = new FileInputStream("en-pos-maxent.bin");
-            POSModel model = new POSModel(inputStream);
-            POSTaggerME tagger = new POSTaggerME(model);
+            try {
+                inputStream = new FileInputStream("en-pos-maxent.bin");
+                POSModel model = new POSModel(inputStream);
+                POSTaggerME tagger = new POSTaggerME(model);
 
 
-            return tagger.tag(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
+                return tagger.tag(input);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                    }
                 }
-            }
         }
         return null;
     }
