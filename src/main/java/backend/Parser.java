@@ -4,6 +4,7 @@ package backend;
  * Created by Evo on 10.07.2017.
  */
 
+import opennlp.tools.lemmatizer.DictionaryLemmatizer;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.sentdetect.SentenceDetectorME;
@@ -12,10 +13,7 @@ import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -129,6 +127,27 @@ public class Parser {
 
             return results;
         }
+    }
+
+    public static String[] getLemma(String[] words, String[] tags){
+        System.out.println("Lemmatizing...");
+        InputStream modelIn=null;
+        String[] lemmas = null;
+        try{
+            modelIn = new FileInputStream("en-lemmatizer.bin");
+            DictionaryLemmatizer lemmatizer = new DictionaryLemmatizer(modelIn);
+            if(words.length != tags.length){
+                return null;
+            }else{
+                lemmas = lemmatizer.lemmatize(words,tags);
+                return lemmas;
+            }
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
