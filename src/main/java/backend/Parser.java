@@ -129,6 +129,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Lemmas of the text
+     * @param words get all tokens of the text
+     * @param tags get all tags of the text
+     * @return StringArray that cointains all lemmas
+     */
     public static String[] getLemma(String[] words, String[] tags){
         System.out.println("Lemmatizing...");
         InputStream modelIn=null;
