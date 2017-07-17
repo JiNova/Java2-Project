@@ -83,7 +83,7 @@ public class SearchResult
 
         int preSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxPreNeighborId]);
         int folSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxFolNeighborId]);
-        String sentence = this.targetSentence.substring(preSentenceId, folSentenceId).replaceAll("%w", this.targetWord);
+        String sentence = this.targetSentence.substring(preSentenceId, folSentenceId).replaceAll("%w", "%"+this.targetWord+"%");
 
         return (maxPreNeighborId > 0 ? "[..] " : "") + sentence + (maxFolNeighborId < this.sentenceParts.length - 1 ? " [..]" : "");
     }

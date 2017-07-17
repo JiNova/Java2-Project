@@ -58,14 +58,14 @@
                 </FlowPane>
             </children>
         </FlowPane>
-        <TableView fx:id="table" layoutY="160.0" prefHeight="360.0" prefWidth="750.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="170.0">
+        <TableView fx:id="table" layoutY="160.0" prefHeight="360.0" prefWidth="750.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="170.0" fixedCellSize="30.0">
             <columns>
                 <TableColumn maxWidth="100.0" prefWidth="75.0" text="#">
                     <cellValueFactory>
                         <PropertyValueFactory property="id" />
                     </cellValueFactory>
                 </TableColumn>
-                <TableColumn maxWidth="1000.0" prefWidth="450.0" text="Result">
+                <TableColumn fx:id="sentenceColumn" maxWidth="1000.0" prefWidth="450.0" text="Result">
                     <cellValueFactory>
                         <PropertyValueFactory property="sentence" />
                     </cellValueFactory>

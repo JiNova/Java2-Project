@@ -5,27 +5,70 @@ import backend.datatype.SearchResult;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Controller {
 
+    private static final int SPLIT_NUMBER = 2;
+    private static final int TARGET_WORD_NUMBER = 3;
     @FXML
-    public TextField url;
+    private TextField url;
     @FXML
-    public TextField keyword;
+    private TextField keyword;
     @FXML
-    public CheckBox sentence;
+    private TableView<Sentence> table;
     @FXML
-    public TableView<Sentence> table;
+    private TableColumn<Sentence, String> sentenceColumn;
     @FXML
-    public FlowPane miscButtons;
+    private FlowPane miscButtons;
+
+    @FXML
+    private void initialize() {
+
+        sentenceColumn.setCellFactory(sentenceColumn -> new TableCell<Sentence, String>() {
+
+            @Override
+            protected void updateItem(final String sentence, final boolean empty) {
+
+                if (sentence == null || empty) {
+                    setGraphic(null);
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setGraphic(null);
+
+                    Pattern targetSentencePattern = Pattern.compile("(.*?)(%([^%\\s]*)%)(.*?)");
+                    Matcher targetWordMatcher = targetSentencePattern.matcher(sentence);
+
+                    if (targetWordMatcher.find()) {
+                        String targetWord = targetWordMatcher.group(TARGET_WORD_NUMBER);
+                        String showSentence = sentence.replaceAll(targetWordMatcher.group(SPLIT_NUMBER), targetWordMatcher.group(TARGET_WORD_NUMBER));
+
+                        setGraphic(buildTextFlow(showSentence, targetWord));
+                        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+                        System.out.println(getTableRow().getHeight());
+                    } else {
+                        System.out.println(sentence);
+                        setText("Something is wrong with result-handling!");
+                        setTextFill(Color.BLACK);
+                        setStyle("");
+                        setContentDisplay(ContentDisplay.TEXT_ONLY);
+                    }
+                }
+            }
+        });
+    }
+
 
     @FXML
     public void search(ActionEvent e) {
@@ -33,9 +76,8 @@ public class Controller {
         String key = keyword.getText();
         String urlField = url.getText();
 
-        if (Pattern.compile("[^0-9A-Za-z]").matcher(key).find())
-        {
-            System.out.println("lel");
+        if (Pattern.compile("[^0-9A-Za-z]").matcher(key).find()) {
+            System.out.println("Invalid character!");
         }
 
         // if(urlField.contains(key)){
@@ -43,26 +85,21 @@ public class Controller {
 
         ArrayList<SearchResult> results = new ArrayList<SearchResult>();
 
-        try
-        {
+        try {
             results = Searcher.searchForTarget(key);
-        }
-        catch (IOException e1)
-        {
+        } catch (IOException e1) {
             e1.printStackTrace();
             return;
         }
 
         ObservableList<Sentence> sentences = table.getItems();
 
-        if (sentences.size() > 0)
-        {
+        if (sentences.size() > 0) {
             sentences.clear();
         }
 
-        for (int i = 0; i < results.size(); i ++)
-        {
-            sentences.add(new Sentence((i+1), results.get(i)));
+        for (int i = 0; i < results.size(); i++) {
+            sentences.add(new Sentence((i + 1), results.get(i)));
         }
 
         miscButtons.setVisible(true);
@@ -94,5 +131,26 @@ public class Controller {
         url.clear();
         keyword.clear();
         miscButtons.setVisible(false);
+    }
+
+    private TextFlow buildTextFlow(final String sentence, final String targetWord) {
+        TextFlow sentenceTextFlow = new TextFlow();
+        int targetWordId = sentence.indexOf(targetWord);
+
+        if (targetWordId > 0) {
+            sentenceTextFlow.getChildren().add(new Text(sentence.substring(0, targetWordId)));
+        }
+
+        Text targetWordText = new Text(sentence.substring(targetWordId, targetWordId + targetWord.length()));
+        targetWordText.setFill(Color.RED);
+        targetWordText.setUnderline(true);
+
+        sentenceTextFlow.getChildren().add(targetWordText);
+
+        if (targetWordId + targetWord.length() < sentence.length()) {
+            sentenceTextFlow.getChildren().add(new Text(sentence.substring(targetWordId + targetWord.length())));
+        }
+
+        return sentenceTextFlow;
     }
 }
