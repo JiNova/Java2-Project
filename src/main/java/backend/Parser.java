@@ -37,14 +37,17 @@ public class Parser {
      * @throws FileNotFoundException
      */
     public static String[] getPosTag(String[] input) {
+        System.out.println("Tagging...");
+        //initialize inputstream
         InputStream inputStream = null;
 
             try {
+                //load the model file
                 inputStream = new FileInputStream("en-pos-maxent.bin");
                 POSModel model = new POSModel(inputStream);
                 POSTaggerME tagger = new POSTaggerME(model);
 
-
+                //returns a StringArray, which contains all tags
                 return tagger.tag(input);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -69,11 +72,14 @@ public class Parser {
     public static String[] tokenizer(String input)
     {
         System.out.println("Tokenizing...");
+        //initialize InputStream
         InputStream modelIn = null;
         try {
+            //load the model file
             modelIn = new FileInputStream("en-token.bin");
             TokenizerModel model = new TokenizerModel(modelIn);
             Tokenizer tokenizer = new TokenizerME(model);
+            //tokenizes the text String and returns a StringArray with all tokens
             return tokenizer.tokenize(input);
 
         } catch (FileNotFoundException e) {
@@ -112,19 +118,28 @@ public class Parser {
 //        return null;
 //    }
 
+
+    /**
+     * save tokens and POS tags into a Map
+     * @param words
+     * @return
+     */
     public static Map<String, String> getWordsTag(String[] words) {
         Map<String, String> results = new HashMap<String, String>();
 
+        //get the POS tags of all words
         String[] tags = getPosTag(words);
-
+        //same amount of tags and tokens
         if (words.length != tags.length) {
             //We done goofed
             return null;
         } else {
+            //iterate through all tokens and tags
             for (int i = 0; i < words.length; i++) {
+                //save current token as key and tag as value
                 results.put(words[i], tags[i]);
             }
-
+            //return the map
             return results;
         }
     }
@@ -165,12 +180,14 @@ public class Parser {
     public static String[] sentenceSplitter(final String text) throws IOException
     {
         System.out.println("Splitting sentences...");
+        //initialize InputStream and load model file
         InputStream modelIn = new FileInputStream("en-sent.bin");
         try {
-
+            //initialize the SentenceModel and the SentenceDetector
             final SentenceModel sentenceModel = new SentenceModel(modelIn);
             SentenceDetectorME sentenceDetector = new SentenceDetectorME(sentenceModel);
 
+            //Split the String text into a StringArray, where every sentence is an element in the Array
             String[] sentences = sentenceDetector.sentDetect(text);
 
             return sentences;
