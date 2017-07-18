@@ -1,5 +1,9 @@
 package backend.datatype;
 
+import backend.Parser;
+
+import java.util.Arrays;
+
 /**
  * Created by andy on 14.07.17.
  */
@@ -106,12 +110,41 @@ public class SearchResult
         //Check if their actually is a preceding
         if(maxPreNeighborId > 0)
         {
-            preSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxPreNeighborId]);
+//            preSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxPreNeighborId]);
         }
 
-        int folSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxFolNeighborId]);
-        String sentence = this.targetSentence.substring(preSentenceId, folSentenceId).replaceAll("%w", "%"+this.targetWord+"%");
+//        int folSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxFolNeighborId]);
+//        String sentence = this.targetSentence.substring(preSentenceId, folSentenceId).replaceAll("%w", "%"+this.targetWord+"%");
+//
+//        return (maxPreNeighborId > 0 ? "[..] " : "") + sentence + (maxFolNeighborId < this.sentenceParts.length - 1 ? " [..]" : "")
 
-        return (maxPreNeighborId > 0 ? "[..] " : "") + sentence + (maxFolNeighborId < this.sentenceParts.length - 1 ? " [..]" : "");
+        String[] shortSentenceParts = Arrays.copyOfRange(sentenceParts, maxPreNeighborId, maxFolNeighborId+1);
+        String[] shortSentenceTags = Parser.getPosTag(shortSentenceParts);
+
+        String sentence = (maxPreNeighborId > 0 ? "[..] " : "");
+
+        for (int i = 0; i < shortSentenceParts.length; i ++)
+        {
+            if (shortSentenceParts[i].equalsIgnoreCase(targetWord))
+            {
+                sentence += "%" + shortSentenceParts[i] + "%";
+            }
+            else
+            {
+                sentence += shortSentenceParts[i];
+            }
+
+            if (i < (shortSentenceParts.length - 1))
+            {
+                if(!shortSentenceTags[i+1].matches("[.,]"))
+                {
+                    sentence += " ";
+                }
+            }
+        }
+
+        sentence += (maxFolNeighborId < this.sentenceParts.length - 1 ? "[..]" : "");
+
+        return sentence;
     }
 }
