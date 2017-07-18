@@ -114,8 +114,15 @@ public class Controller {
         String key = keyword.getText();
         String urlField = url.getText();
 
-        if (Pattern.compile("[^0-9A-Za-z]").matcher(key).find()) {
-            System.out.println("Invalid character!");
+        if (Pattern.compile("(.*)[^0-9A-Za-zßÄÖÜäöü](.*)").matcher(key).find()) {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid character");
+            alert.setHeaderText(null);
+            alert.setContentText("You may only search for words consisting of letters and digits!");
+
+            alert.showAndWait();
+            return;
         }
 
         ArrayList<SearchResult> results;
@@ -124,6 +131,19 @@ public class Controller {
             results = Searcher.searchForTarget(key);
         } catch (IOException e1) {
             e1.printStackTrace();
+            return;
+        }
+
+        if (results.size() == 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Result");
+            alert.setHeaderText(null);
+            alert.setContentText("Unfortunately, we unable to find the provided keyword. Sad :(");
+
+            System.out.println((System.nanoTime() - startTime) / 1000000000.0 + " seconds");
+
+            alert.showAndWait();
             return;
         }
 
