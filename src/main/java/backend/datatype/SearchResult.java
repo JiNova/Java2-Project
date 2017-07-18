@@ -66,22 +66,49 @@ public class SearchResult
         return this.getTargetSentence().replaceAll("%w", this.targetWord);
     }
 
+    /**
+     * Get a shortened version of the sentence, which only shows a narrowed down version of the sentence with a
+     * specific amount of neighbours. If the target-word has less preceding or following neighbours, than specified,
+     * the method will adjust the amount of neighbours to display in the respective direction.
+     *
+     * @param neighbours The neighbours to the target-word to list.
+     *
+     * @return The sentence in a shortened version a la "[..] neighbour neighbour target-word neighbour neighbour"
+     */
     public String getTargetInSentenceShort(final int neighbours) {
 
-        int maxPreNeighborId = this.wordId - neighbours;
+        //We use these two to determine the maximum amount of neighbours
+        //we will be able to list
+        int maxPreNeighborId = 0;
         int maxFolNeighborId = this.wordId + neighbours;
 
-        while (maxPreNeighborId < 0)
+        if (this.wordId > 0)
         {
-            ++maxPreNeighborId;
+            //Number of preceding neighbours the user would like to display
+            maxPreNeighborId = this.wordId - neighbours;
+
+            //Find the actual number of preceding neighbours we can display
+            while (maxPreNeighborId < 0)
+            {
+                ++maxPreNeighborId;
+            }
         }
 
+        //Find the actual number of following neighbours we can display
         while (maxFolNeighborId > (this.sentenceParts.length - 1))
         {
             --maxFolNeighborId;
         }
 
-        int preSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxPreNeighborId]);
+        //Index for the first preceding neighbour
+        int preSentenceId = 0;
+
+        //Check if their actually is a preceding
+        if(maxPreNeighborId > 0)
+        {
+            preSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxPreNeighborId]);
+        }
+
         int folSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxFolNeighborId]);
         String sentence = this.targetSentence.substring(preSentenceId, folSentenceId).replaceAll("%w", "%"+this.targetWord+"%");
 

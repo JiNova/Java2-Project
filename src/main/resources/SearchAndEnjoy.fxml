@@ -39,14 +39,14 @@
                 </AnchorPane>
                 <FlowPane prefHeight="25.0" prefWidth="769.0">
                     <children>
-                        <ComboBox prefHeight="25.0" prefWidth="130.0" promptText="Neighbour tags">
+                        <ComboBox prefHeight="27.0" prefWidth="152.0" promptText="Neighbour tags">
                             <FlowPane.margin>
                                 <Insets />
                             </FlowPane.margin>
                         </ComboBox>
                   <Button mnemonicParsing="false" onAction="#fetch" text="Fetch...">
                      <FlowPane.margin>
-                        <Insets left="130.0" />
+                        <Insets left="110.0" />
                      </FlowPane.margin>
                   </Button>
                     </children>
@@ -96,19 +96,11 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <FlowPane fx:id="miscButtons" prefHeight="25.0" prefWidth="750.0" visible="false" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="550.0">
-            <children>
-                <Button mnemonicParsing="false" onAction="#clean" prefWidth="50.0" text="Clear">
-                    <FlowPane.margin>
-                        <Insets />
-                    </FlowPane.margin>
-                </Button>
-                <Button mnemonicParsing="false" text="Save...">
-                    <FlowPane.margin>
-                        <Insets left="650.0" />
-                    </FlowPane.margin>
-                </Button>
-            </children>
-        </FlowPane>
+      <AnchorPane fx:id="miscButtons" visible="false" layoutX="25.0" layoutY="550.0" prefHeight="28.0" prefWidth="750.0">
+         <children>
+                <Button mnemonicParsing="false" onAction="#clean" prefHeight="27.0" prefWidth="68.0" text="Clear" AnchorPane.leftAnchor="0.0" />
+                <Button layoutX="650.0" layoutY="1.0" mnemonicParsing="false" text="Save..." AnchorPane.rightAnchor="0.0" />
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

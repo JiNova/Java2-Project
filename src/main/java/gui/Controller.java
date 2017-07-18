@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -34,12 +35,18 @@ public class Controller {
     @FXML
     private TableColumn<Sentence, String> sentenceColumn;
     @FXML
-    private FlowPane miscButtons;
+    private AnchorPane miscButtons;
 
     @FXML
     private void initialize() {
 
-        url.textProperty().addListener((observableValue, s, t1) -> System.out.println(s + " -> " + t1));
+        url.textProperty().addListener((observableValue, oldUrl, newUrl) -> {
+
+            if (fetchFromFile && newUrl.startsWith("http"))
+            {
+                fetchFromFile = false;
+            }
+        });
 
         sentenceColumn.setCellFactory(sentenceColumn -> new TableCell<Sentence, String>() {
 
@@ -62,8 +69,6 @@ public class Controller {
 
                         setGraphic(buildTextFlow(showSentence, targetWord));
                         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-
-                        System.out.println(getTableRow().getHeight());
                     } else {
                         System.out.println(sentence);
                         setText("Something is wrong with result-handling!");
@@ -105,6 +110,7 @@ public class Controller {
     @FXML
     public void search(ActionEvent e) {
 
+        long startTime = System.nanoTime();
         String key = keyword.getText();
         String urlField = url.getText();
 
@@ -132,6 +138,7 @@ public class Controller {
         }
 
         miscButtons.setVisible(true);
+        System.out.println((System.nanoTime() - startTime) / 1000000000.0 + " seconds");
     }
 
     @FXML
