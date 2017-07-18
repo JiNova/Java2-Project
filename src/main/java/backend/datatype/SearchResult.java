@@ -104,20 +104,6 @@ public class SearchResult
             --maxFolNeighborId;
         }
 
-        //Index for the first preceding neighbour
-        int preSentenceId = 0;
-
-        //Check if their actually is a preceding
-        if(maxPreNeighborId > 0)
-        {
-//            preSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxPreNeighborId]);
-        }
-
-//        int folSentenceId = this.targetSentence.indexOf(this.sentenceParts[maxFolNeighborId]);
-//        String sentence = this.targetSentence.substring(preSentenceId, folSentenceId).replaceAll("%w", "%"+this.targetWord+"%");
-//
-//        return (maxPreNeighborId > 0 ? "[..] " : "") + sentence + (maxFolNeighborId < this.sentenceParts.length - 1 ? " [..]" : "")
-
         String[] shortSentenceParts = Arrays.copyOfRange(sentenceParts, maxPreNeighborId, maxFolNeighborId+1);
         String[] shortSentenceTags = Parser.getPosTag(shortSentenceParts);
 
@@ -136,14 +122,14 @@ public class SearchResult
 
             if (i < (shortSentenceParts.length - 1))
             {
-                if(!shortSentenceTags[i+1].matches("[.,]"))
+                if(!shortSentenceTags[i+1].matches("[\\.,]"))
                 {
                     sentence += " ";
                 }
             }
         }
 
-        sentence += (maxFolNeighborId < this.sentenceParts.length - 1 ? "[..]" : "");
+        sentence += (maxFolNeighborId < this.sentenceParts.length - 1 ? " [..]" : "");
 
         return sentence;
     }
