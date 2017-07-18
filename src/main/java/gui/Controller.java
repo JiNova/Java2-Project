@@ -10,7 +10,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -20,6 +22,9 @@ public class Controller {
 
     private static final int SPLIT_NUMBER = 2;
     private static final int TARGET_WORD_NUMBER = 3;
+
+    private boolean fetchFromFile = false;
+
     @FXML
     private TextField url;
     @FXML
@@ -33,6 +38,8 @@ public class Controller {
 
     @FXML
     private void initialize() {
+
+        url.textProperty().addListener((observableValue, s, t1) -> System.out.println(s + " -> " + t1));
 
         sentenceColumn.setCellFactory(sentenceColumn -> new TableCell<Sentence, String>() {
 
@@ -69,6 +76,31 @@ public class Controller {
         });
     }
 
+    @FXML
+    public void fetch(ActionEvent e)
+    {
+        if (this.fetchFromFile)
+        {
+
+        }
+    }
+
+    @FXML
+    public void open(ActionEvent e)
+    {
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+
+            System.out.println("File selected: " + selectedFile.getAbsolutePath());
+            this.url.setText(selectedFile.getAbsolutePath());
+            this.fetchFromFile = true;
+        }
+        else {
+           System.out.println("File selection cancelled.");
+        }
+    }
 
     @FXML
     public void search(ActionEvent e) {
@@ -80,10 +112,7 @@ public class Controller {
             System.out.println("Invalid character!");
         }
 
-        // if(urlField.contains(key)){
-        // }
-
-        ArrayList<SearchResult> results = new ArrayList<SearchResult>();
+        ArrayList<SearchResult> results;
 
         try {
             results = Searcher.searchForTarget(key);
