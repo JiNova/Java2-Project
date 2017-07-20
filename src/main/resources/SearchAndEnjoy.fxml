@@ -39,8 +39,8 @@
                 </AnchorPane>
                 <FlowPane prefHeight="25.0" prefWidth="769.0">
                     <children>
-                        <Label text="Neighbour tags:" />
-                        <ComboBox fx:id="neighbours" prefHeight="27.0" prefWidth="60.0" promptText="Neighbour tags">
+                        <Label text="Neighbour words:" />
+                        <ComboBox fx:id="neighbours" prefHeight="27.0" prefWidth="60.0" promptText="Neighbour words">
                             <FlowPane.margin>
                                 <Insets left="10.0" />
                             </FlowPane.margin>
@@ -60,7 +60,7 @@
                 </FlowPane>
             </children>
         </FlowPane>
-        <TableView fx:id="table" fixedCellSize="30.0" layoutY="160.0" prefHeight="360.0" prefWidth="750.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="170.0">
+        <TableView fx:id="table" fixedCellSize="35.0" layoutY="160.0" prefHeight="360.0" prefWidth="750.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="170.0">
             <columns>
                 <TableColumn maxWidth="100.0" prefWidth="75.0" text="#">
                     <cellValueFactory>

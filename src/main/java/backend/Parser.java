@@ -5,6 +5,8 @@ package backend;
  */
 
 import opennlp.tools.lemmatizer.DictionaryLemmatizer;
+import opennlp.tools.lemmatizer.LemmatizerME;
+import opennlp.tools.lemmatizer.LemmatizerModel;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.sentdetect.SentenceDetectorME;
@@ -13,7 +15,10 @@ import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,23 +46,23 @@ public class Parser {
         //initialize inputstream
         InputStream inputStream = null;
 
-            try {
-                //load the model file
-                inputStream = new FileInputStream("en-pos-maxent.bin");
-                POSModel model = new POSModel(inputStream);
-                POSTaggerME tagger = new POSTaggerME(model);
+        try {
+            //load the model file
+            inputStream = new FileInputStream("en-pos-maxent.bin");
+            POSModel model = new POSModel(inputStream);
+            POSTaggerME tagger = new POSTaggerME(model);
 
-                //returns a StringArray, which contains all tags
-                return tagger.tag(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                    }
+            //returns a StringArray, which contains all tags
+            return tagger.tag(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
                 }
+            }
         }
         return null;
     }
@@ -69,8 +74,7 @@ public class Parser {
      * @return ArrayList of StringArrays which contains all tokens of the sentences
      * @throws FileNotFoundException
      */
-    public static String[] tokenizer(String input)
-    {
+    public static String[] tokenizer(String input) {
         //initialize InputStream
         InputStream modelIn = null;
         try {
@@ -99,6 +103,7 @@ public class Parser {
 
     /**
      * save tokens and POS tags into a Map
+     *
      * @param words
      * @return
      */
@@ -124,25 +129,26 @@ public class Parser {
 
     /**
      * Lemmas of the text
+     *
      * @param words get all tokens of the text
-     * @param tags get all tags of the text
+     * @param tags  get all tags of the text
      * @return StringArray that cointains all lemmas
      */
-    public static String[] getLemma(String[] words, String[] tags){
-        InputStream modelIn=null;
+    public static String[] getLemma(String[] words, String[] tags) {
+        InputStream modelIn = null;
         String[] lemmas = null;
-        try{
+        try {
             modelIn = new FileInputStream("en-lemmatizer.bin");
-            DictionaryLemmatizer lemmatizer = new DictionaryLemmatizer(modelIn);
-            if(words.length != tags.length){
+            LemmatizerME lemmatizer = new LemmatizerME(new LemmatizerModel(modelIn));
+            if (words.length != tags.length) {
                 return null;
-            }else{
-                lemmas = lemmatizer.lemmatize(words,tags);
+            } else {
+                lemmas = lemmatizer.lemmatize(words, tags);
                 return lemmas;
             }
-        }catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -154,8 +160,7 @@ public class Parser {
      * @return ArrayList with all sentences of the text
      * @throws IOException
      */
-    public static String[] sentenceSplitter(final String text) throws IOException
-    {
+    public static String[] sentenceSplitter(final String text) throws IOException {
         //initialize InputStream and load model file
         InputStream modelIn = new FileInputStream("en-sent.bin");
         try {
@@ -167,13 +172,9 @@ public class Parser {
             String[] sentences = sentenceDetector.sentDetect(text);
 
             return sentences;
-        }
-        catch (final IOException e)
-        {
+        } catch (final IOException e) {
             e.printStackTrace();
-        }
-        finally
-        {
+        } finally {
             if (modelIn != null) {
                 try {
                     modelIn.close();

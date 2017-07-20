@@ -31,6 +31,10 @@ public class Controller {
 
     private boolean fetchFromFile = true;
 
+    private final ObservableList<Integer> neighbourOpt = FXCollections.observableArrayList(
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+    );
+
     @FXML
     private TextField url;
     @FXML
@@ -98,10 +102,6 @@ public class Controller {
             }
         });
 
-        ObservableList<Integer> neighbourOpt = FXCollections.observableArrayList(
-                1, 2, 3, 4, 5
-        );
-
         this.neighbours.getItems().addAll(neighbourOpt);
         this.neighbours.getSelectionModel().select(NEIGHBOUR_DEFAULT - 1);
     }
@@ -149,7 +149,7 @@ public class Controller {
         ArrayList<SearchResult> results;
 
         try {
-            results = Searcher.searchForTarget(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
+            results = Searcher.searchForTargetWord(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
         } catch (IOException e1) {
 
             GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", e1.getMessage());
