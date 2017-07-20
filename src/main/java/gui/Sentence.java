@@ -4,7 +4,9 @@ import searcher.datatype.SearchResult;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Sentence {
-
+/**
+SimpleStringProperty to be used for TableView 
+*/
     public SimpleStringProperty id = new SimpleStringProperty("");
     public SimpleStringProperty sentence = new SimpleStringProperty("");
     public SimpleStringProperty posTag = new SimpleStringProperty("");
@@ -18,7 +20,9 @@ public class Sentence {
         this.preTag.set(preTag);
         this.folTag.set(folTag);
     }
-
+/**
+Constructor for sentence class for the TableView  
+*/
     public Sentence(final int id, final SearchResult searchResult)
     {
         this.id.set(Integer.toString(id));
@@ -28,7 +32,9 @@ public class Sentence {
         this.preTag.set(searchResult.getPrecTag());
         this.folTag.set(searchResult.getFolTag());
     }
-
+/**
+Getters and setters
+*/
     public String getId() {
         return id.get();
     }
