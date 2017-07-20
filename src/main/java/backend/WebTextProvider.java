@@ -25,7 +25,8 @@ public class WebTextProvider extends FileTextProvider implements TextProvider {
         this.path = url;
 
         this.title = document.title();
-        this.pElements = document.select("p");
+        this.pElements = document.select("div.mw-parser-output > p,div.mw-parser-output > ul");
+
         this.captionElements = document.select("div.thumbcaption");
 
         if (this.pElements == null)
@@ -65,14 +66,14 @@ public class WebTextProvider extends FileTextProvider implements TextProvider {
 
                 for (Element element : this.pElements)
                 {
-                    writer.append(element.text());
+                    writer.append(element.text() +"\n");
                 }
 
                 if (this.captionElements != null)
                 {
                     for (Element element : this.captionElements)
                     {
-                        writer.append(element.text());
+                        writer.append(element.text() +"\n");
                     }
                 }
             }

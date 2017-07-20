@@ -172,7 +172,7 @@ public class Controller {
         }
 
         for (int i = 0; i < results.size(); i++) {
-            sentences.add(new Sentence((i + 1), results.get(i)));
+            sentences.add(new Sentence((i + 1), results.get(i), (Integer) neighbours.getSelectionModel().getSelectedItem()));
         }
 
         miscButtons.setVisible(true);

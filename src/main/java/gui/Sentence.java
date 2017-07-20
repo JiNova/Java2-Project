@@ -7,11 +7,14 @@ public class Sentence {
 /**
 SimpleStringProperty to be used for TableView 
 */
-    public SimpleStringProperty id = new SimpleStringProperty("");
-    public SimpleStringProperty sentence = new SimpleStringProperty("");
-    public SimpleStringProperty posTag = new SimpleStringProperty("");
-    public SimpleStringProperty preTag = new SimpleStringProperty("");
-    public SimpleStringProperty folTag = new SimpleStringProperty("");
+
+    private int neighbours = 2;
+
+    private SimpleStringProperty id = new SimpleStringProperty("");
+    private SimpleStringProperty sentence = new SimpleStringProperty("");
+    private SimpleStringProperty posTag = new SimpleStringProperty("");
+    private SimpleStringProperty preTag = new SimpleStringProperty("");
+    private SimpleStringProperty folTag = new SimpleStringProperty("");
 
     public Sentence(final String sentence, final String posTag, final String preTag, final String folTag) {
 
@@ -23,14 +26,15 @@ SimpleStringProperty to be used for TableView
 /**
 Constructor for sentence class for the TableView  
 */
-    public Sentence(final int id, final SearchResult searchResult)
+    public Sentence(final int id, final SearchResult searchResult, final int neighbours)
     {
         this.id.set(Integer.toString(id));
 //        this.sentence.set(searchResult.getTargetInSentence());
-        this.sentence.set(searchResult.getTargetInSentenceShort(2));
+        this.sentence.set(searchResult.getTargetInSentenceShort(neighbours));
         this.posTag.set(searchResult.getTargetTag());
         this.preTag.set(searchResult.getPrecTag());
         this.folTag.set(searchResult.getFolTag());
+        this.neighbours = neighbours;
     }
 /**
 Getters and setters
@@ -74,5 +78,13 @@ Getters and setters
     public void setFolTag(String folTag) {
         this.folTag.set(folTag);
         ;
+    }
+
+    public int getNeighbours() {
+        return neighbours;
+    }
+
+    public void setNeighbours(int neighbours) {
+        this.neighbours = neighbours;
     }
 }
