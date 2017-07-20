@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/**
+Controls the FXML File , methods for buttons and text fields 
+*/
 public class Controller {
 
     private static final int SPLIT_NUMBER = 2;
@@ -169,6 +171,9 @@ public class Controller {
 //            ex.printStackTrace();
 //        }
     }
+/**
+Clean all fields
+*/
 
     @FXML
     public void clean(ActionEvent e) {
