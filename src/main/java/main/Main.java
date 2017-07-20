@@ -10,7 +10,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class Main extends Application {
-
+/**
+Loads the GUI from FXML file 
+*/
     public void start(Stage primaryStage) throws IOException {
         Parent root;
 
@@ -29,7 +31,9 @@ public class Main extends Application {
             return;
         }
     }
-
+/**
+Doesn't do anything is just used as main   
+*/
     public static void main(String[] args) {
 
         launch(args);
