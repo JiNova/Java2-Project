@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
@@ -45,6 +46,21 @@
                                 <Insets left="10.0" />
                             </FlowPane.margin>
                         </ComboBox>
+                  <Label text="Search-method:">
+                     <FlowPane.margin>
+                        <Insets left="30.0" />
+                     </FlowPane.margin>
+                  </Label>
+                  <ToggleButton fx:id="wordButton" mnemonicParsing="false" selected="true" text="Word" userData="search_word">
+                     <FlowPane.margin>
+                        <Insets left="15.0" />
+                     </FlowPane.margin>
+                  </ToggleButton>
+                  <ToggleButton fx:id="lemmaButton" mnemonicParsing="false" text="Lemma" userData="search_lemma">
+                     <FlowPane.margin>
+                        <Insets left="10.0" />
+                     </FlowPane.margin>
+                  </ToggleButton>
                     </children>
                     <FlowPane.margin>
                         <Insets left="25.0" top="15.0" />

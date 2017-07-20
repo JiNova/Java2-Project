@@ -3,8 +3,6 @@ package gui;
 import backend.TextProviderFactory;
 import gui.util.GUIUtil;
 import javafx.collections.FXCollections;
-import searcher.Searcher;
-import searcher.datatype.SearchResult;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,31 +12,40 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import searcher.Searcher;
+import searcher.datatype.SearchResult;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 /**
-Controls the FXML File , methods for buttons and text fields 
-*/
+ * Controls the FXML File , methods for buttons and text fields
+ */
 public class Controller {
 
     private static final int SPLIT_NUMBER = 2;
     private static final int TARGET_WORD_NUMBER = 3;
     private static final int NEIGHBOUR_DEFAULT = 2;
-
-    private boolean fetchFromFile = true;
-
     private final ObservableList<Integer> neighbourOpt = FXCollections.observableArrayList(
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     );
+
+    private boolean fetchFromFile = true;
+    private boolean searchForWord = true;
+
+    private ToggleGroup searchMethod = new ToggleGroup();
 
     @FXML
     private TextField url;
     @FXML
     private TextField keyword;
+    @FXML
+    private ToggleButton wordButton;
+    @FXML
+    private ToggleButton lemmaButton;
     @FXML
     private Button searchButton;
     @FXML
@@ -55,17 +62,13 @@ public class Controller {
 
         url.textProperty().addListener((observableValue, oldUrl, newUrl) -> {
 
-            if (newUrl.isEmpty())
-            {
+            if (newUrl.isEmpty()) {
                 searchButton.setDisable(true);
-            }
-            else
-            {
+            } else {
                 searchButton.setDisable(false);
             }
 
-            if (fetchFromFile && newUrl.startsWith("http"))
-            {
+            if (fetchFromFile && newUrl.startsWith("http")) {
                 fetchFromFile = false;
             }
         });
@@ -102,13 +105,32 @@ public class Controller {
             }
         });
 
+        searchMethod.selectedToggleProperty().addListener(
+                (observable, oldToggle, newToggle) -> {
+                    if (null != newToggle) {
+                        if ("search_word".equals(newToggle.getUserData()))
+                        {
+                            this.searchForWord = true;
+                            System.out.println("Word search selected");
+                        }
+                        else
+                        {
+                            this.searchForWord = false;
+                            System.out.println("Lemma search selected");
+                        }
+                    }
+                });
+
+        this.wordButton.setToggleGroup(this.searchMethod);
+        this.lemmaButton.setToggleGroup(this.searchMethod);
+
+
         this.neighbours.getItems().addAll(neighbourOpt);
         this.neighbours.getSelectionModel().select(NEIGHBOUR_DEFAULT - 1);
     }
 
     @FXML
-    public void open(ActionEvent e)
-    {
+    public void open(ActionEvent e) {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
 
@@ -117,9 +139,8 @@ public class Controller {
             System.out.println("File selected: " + selectedFile.getAbsolutePath());
             this.url.setText(selectedFile.getAbsolutePath());
             this.fetchFromFile = true;
-        }
-        else {
-           System.out.println("File selection cancelled.");
+        } else {
+            System.out.println("File selection cancelled.");
         }
     }
 
@@ -130,8 +151,7 @@ public class Controller {
         final String key = keyword.getText();
         final String urlField = url.getText();
 
-        if (key == null || key.isEmpty())
-        {
+        if (key == null || key.isEmpty()) {
             GUIUtil.showAlert(Alert.AlertType.ERROR, "No keyword",
                     "Please specify a keyword to search for!");
 
@@ -156,8 +176,7 @@ public class Controller {
             return;
         }
 
-        if (results.size() == 0)
-        {
+        if (results.size() == 0) {
             System.out.println((System.nanoTime() - startTime) / 1000000000.0 + " seconds");
             GUIUtil.showAlert(Alert.AlertType.INFORMATION, "No Result",
                     "Unfortunately, we were unable to find the provided keyword. Sad :(");
@@ -196,9 +215,10 @@ public class Controller {
 //            ex.printStackTrace();
 //        }
     }
-/**
-Clean all fields
-*/
+
+    /**
+     * Clean all fields
+     */
 
     @FXML
     public void clean(ActionEvent e) {
