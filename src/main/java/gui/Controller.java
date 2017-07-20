@@ -1,6 +1,7 @@
 package gui;
 
 import backend.TextProviderFactory;
+import backend.exceptions.ModuleNotInitializedException;
 import gui.util.GUIUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -178,9 +179,15 @@ public class Controller {
             {
                 results = Searcher.searchForTargetLemma(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
             }
-        } catch (IOException e1) {
+        }
+        catch (IOException e1) {
 
             GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", e1.getMessage());
+            return;
+        }
+        catch(ModuleNotInitializedException e2)
+        {
+            GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", e2.getMessage());
             return;
         }
 

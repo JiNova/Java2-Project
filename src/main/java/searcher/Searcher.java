@@ -7,6 +7,8 @@ package searcher;
 import backend.Parser;
 import backend.TextProvider;
 import backend.TextProviderFactory;
+import backend.exceptions.ModuleNotInitializedException;
+import main.Main;
 import searcher.datatype.SearchResult;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,7 +19,7 @@ import java.util.*;
 
 public class Searcher {
 
-    public static ArrayList<SearchResult> searchForTargetWord(final String targetWord, final String path, final TextProviderFactory.PROVIDER_TYPES providerType) throws IOException {
+    public static ArrayList<SearchResult> searchForTargetWord(final String targetWord, final String path, final TextProviderFactory.PROVIDER_TYPES providerType) throws IOException, ModuleNotInitializedException {
 
         System.out.println("Searching for word: " +targetWord);
 
@@ -39,7 +41,7 @@ public class Searcher {
 
                 if (StringUtils.containsIgnoreCase(line, targetWord))
                 {
-                    sentences = Parser.sentenceSplitter(line);
+                    sentences = Main.getParser().splitSentences(line);
                 }
                 else
                 {
@@ -49,7 +51,7 @@ public class Searcher {
                 for (int sentenceId = 0; sentenceId < sentences.length; sentenceId++) {
 
                     if (StringUtils.containsIgnoreCase(sentences[sentenceId], targetWord)) {
-                        wordsOnLine = Parser.tokenizer(sentences[sentenceId]); //split the line into separate words
+                        wordsOnLine = Main.getParser().tokenize(sentences[sentenceId]); //split the line into separate words
 
                         for (int i = 0; i < wordsOnLine.length; i++) {
                             if (wordsOnLine[i].equalsIgnoreCase(targetWord)) {
@@ -87,7 +89,7 @@ public class Searcher {
         }
     }
 
-    public static ArrayList<SearchResult> searchForTargetLemma(final String targetLemma, final String path, final TextProviderFactory.PROVIDER_TYPES providerType) throws IOException {
+    public static ArrayList<SearchResult> searchForTargetLemma(final String targetLemma, final String path, final TextProviderFactory.PROVIDER_TYPES providerType) throws IOException, ModuleNotInitializedException {
         System.out.println("Searching for lemma: " + targetLemma);
 
         BufferedReader br = null;
@@ -104,13 +106,13 @@ public class Searcher {
 
             while ((line = br.readLine()) != null) {
 
-                String[] sentences = Parser.sentenceSplitter(line);
+                String[] sentences = Main.getParser().splitSentences(line);
 
                 for (int sentenceId = 0; sentenceId < sentences.length; sentenceId++) {
 
-                    wordsOnLine = Parser.tokenizer(sentences[sentenceId]); //split the line into separate words
-                    String[] tagResult = Parser.getPosTag(wordsOnLine);
-                    String[] lemmaResult = Parser.getLemma(wordsOnLine, tagResult);
+                    wordsOnLine = Main.getParser().tokenize(sentences[sentenceId]); //split the line into separate words
+                    String[] tagResult = Main.getParser().getPosTag(wordsOnLine);
+                    String[] lemmaResult = Main.getParser().getLemma(wordsOnLine, tagResult);
 
                         for (int i = 0; i < lemmaResult.length; i++) {
 
@@ -130,7 +132,11 @@ public class Searcher {
         }
         catch (IOException e)
         {
-            throw new IOException("Error while accessing file");
+            throw new IOException("Error while accessing file", e);
+        }
+        catch (ModuleNotInitializedException e)
+        {
+            throw e;
         }
         finally
         {
@@ -148,8 +154,7 @@ public class Searcher {
         }
     }
 
-    private static SearchResult saveResult(final int wordIndex, final String word, final String sentence, final String[] sentenceParts)
-    {
+    private static SearchResult saveResult(final int wordIndex, final String word, final String sentence, final String[] sentenceParts) throws ModuleNotInitializedException {
         SearchResult result = new SearchResult(wordIndex, word, sentence, sentenceParts);
 
         String precWord = "";
@@ -164,7 +169,7 @@ public class Searcher {
         }
 
         String words[] = {precWord, word, folWord};
-        Map<String, String> wordsAndTags = Parser.getWordsTag(words);
+        Map<String, String> wordsAndTags = Main.getParser().getWordsTag(words);
 
         result.setTargetTag(wordsAndTags.get(word));
         result.setPrecTag(wordsAndTags.get(precWord));

@@ -1,6 +1,8 @@
 package searcher.datatype;
 
 import backend.Parser;
+import backend.exceptions.ModuleNotInitializedException;
+import main.Main;
 
 import java.util.Arrays;
 
@@ -79,7 +81,7 @@ public class SearchResult
      *
      * @return The sentence in a shortened version a la "[..] neighbour neighbour target-word neighbour neighbour"
      */
-    public String getTargetInSentenceShort(final int neighbours) {
+    public String getTargetInSentenceShort(final int neighbours) throws ModuleNotInitializedException {
 
         //We use these two to determine the maximum amount of neighbours
         //we will be able to list
@@ -105,7 +107,7 @@ public class SearchResult
         }
 
         String[] shortSentenceParts = Arrays.copyOfRange(sentenceParts, maxPreNeighborId, maxFolNeighborId+1);
-        String[] shortSentenceTags = Parser.getPosTag(shortSentenceParts);
+        String[] shortSentenceTags = Main.getParser().getPosTag(shortSentenceParts);
 
         StringBuilder sentence = new StringBuilder((maxPreNeighborId > 0 ? "[..] " : ""));
 

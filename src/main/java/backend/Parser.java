@@ -4,34 +4,139 @@ package backend;
  * Created by Evo on 10.07.2017.
  */
 
-import opennlp.tools.lemmatizer.DictionaryLemmatizer;
+import backend.exceptions.ModuleNotInitializedException;
 import opennlp.tools.lemmatizer.LemmatizerME;
 import opennlp.tools.lemmatizer.LemmatizerModel;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
-import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Parser {
-    private String text;
-    private ArrayList<String[]> tkns;
-    private ArrayList<String[]> POStags;
 
-    public Parser(String s) {
-        text = s;
-        tkns = new ArrayList<String[]>();
-        POStags = new ArrayList<String[]>();
+    private POSTaggerME tagger          = null;
+    private TokenizerME tokenizer       = null;
+    private LemmatizerME lemmatizer     = null;
+    private SentenceDetectorME splitter = null;
+
+    public void setTagger(final String posModelFile) throws IOException {
+
+        InputStream taggerStream = null;
+
+        try
+        {
+            //initialize tagger
+            taggerStream = new FileInputStream(posModelFile);
+            POSModel posModel = new POSModel(taggerStream);
+            this.tagger = new POSTaggerME(posModel);
+        }
+        catch (IOException e)
+        {
+            throw e;
+        }
+        finally {
+
+            try {
+                if (null != taggerStream) {
+                    taggerStream.close();
+                }
+            } catch (IOException e) {
+                throw e;
+            }
+        }
+    }
+
+    public void setTokenizer(final String tokenModelFile) throws IOException {
+
+        InputStream tokenStream = null;
+
+        try {
+            //initialize tokenize
+            tokenStream = new FileInputStream(tokenModelFile);
+            TokenizerModel tokenizerModel = new TokenizerModel(tokenStream);
+            this.tokenizer = new TokenizerME(tokenizerModel);
+        }
+        catch (IOException e)
+        {
+            throw e;
+        }
+        finally {
+
+            try {
+
+                if (null != tokenStream) {
+                    tokenStream.close();
+                }
+            } catch (IOException e) {
+                throw e;
+            }
+        }
+    }
+
+    public void setLemmatizer(final String lemmaModelFile) throws IOException {
+        InputStream lemmaStream = null;
+
+        try {
+
+            //initialize lemmatizer
+            lemmaStream = new FileInputStream(lemmaModelFile);
+            LemmatizerModel lemmatizerModel = new LemmatizerModel(lemmaStream);
+            this.lemmatizer = new LemmatizerME(lemmatizerModel);
+        }
+        catch (IOException e)
+        {
+            throw e;
+        }
+        finally {
+
+            try {
+                if (null != lemmaStream) {
+                    lemmaStream.close();
+                }
+            } catch (IOException e) {
+                throw e;
+            }
+        }
+    }
+
+    public void setSplitter( final String splitterModelFile) throws IOException {
+
+        InputStream splitterStream = null;
+
+        try {
+
+            //initialize splitter
+            splitterStream = new FileInputStream(splitterModelFile);
+            SentenceModel sentenceModel = new SentenceModel(splitterStream);
+            this.splitter = new SentenceDetectorME(sentenceModel);
+        }
+        catch (IOException e)
+        {
+            throw e;
+        }
+        finally {
+
+            try
+            {
+                if (null != splitterStream)
+                {
+                    splitterStream.close();
+                }
+            }
+            catch (IOException e)
+            {
+                throw e;
+            }
+        }
+
     }
 
     /**
@@ -39,75 +144,48 @@ public class Parser {
      *
      * @param input tokens of the text
      * @return ArrayList of StringArrays that is filled with all tags
-     * @throws FileNotFoundException
+     * @throws ModuleNotInitializedException
      */
-    public static String[] getPosTag(String[] input) {
+    public String[] getPosTag(String[] input) throws ModuleNotInitializedException {
 
-        //initialize inputstream
-        InputStream inputStream = null;
-
-        try {
-            //load the model file
-            inputStream = new FileInputStream("en-pos-maxent.bin");
-            POSModel model = new POSModel(inputStream);
-            POSTaggerME tagger = new POSTaggerME(model);
-
-            //returns a StringArray, which contains all tags
-            return tagger.tag(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                }
-            }
+        if (this.tagger != null)
+        {
+            return this.tagger.tag(input);
         }
-        return null;
+        else
+        {
+            throw new ModuleNotInitializedException("Tagger-module not initialized!");
+        }
     }
 
     /**
-     * Tokenizes a sentence into a single word
+     * Tokenizes a sentence into single words
      *
      * @param input the sentence
      * @return ArrayList of StringArrays which contains all tokens of the sentences
-     * @throws FileNotFoundException
+     * @throws ModuleNotInitializedException
      */
-    public static String[] tokenizer(String input) {
-        //initialize InputStream
-        InputStream modelIn = null;
-        try {
-            //load the model file
-            modelIn = new FileInputStream("en-token.bin");
-            TokenizerModel model = new TokenizerModel(modelIn);
-            Tokenizer tokenizer = new TokenizerME(model);
-            //tokenizes the text String and returns a StringArray with all tokens
-            return tokenizer.tokenize(input);
+    public String[] tokenize(String input) throws ModuleNotInitializedException {
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (modelIn != null) {
-                try {
-                    modelIn.close();
-                } catch (IOException e) {
-                }
-            }
+        if (this.tokenizer != null)
+        {
+            return this.tokenizer.tokenize(input);
         }
-        return null;
+        else
+        {
+            throw new ModuleNotInitializedException("Tokenizer-module not initialized!");
+        }
     }
 
 
     /**
-     * save tokens and POS tags into a Map
+     * Save tokens and corresponding POS tags into a Map
      *
      * @param words
      * @return
+     * @throws ModuleNotInitializedException
      */
-    public static Map<String, String> getWordsTag(String[] words) {
+    public Map<String, String> getWordsTag(String[] words) throws ModuleNotInitializedException {
         Map<String, String> results = new HashMap<String, String>();
 
         //get the POS tags of all words
@@ -130,59 +208,38 @@ public class Parser {
     /**
      * Lemmas of the text
      *
-     * @param words get all tokens of the text
-     * @param tags  get all tags of the text
-     * @return StringArray that cointains all lemmas
+     * @param words
+     * @param tags
+     * @return
+     * @throws ModuleNotInitializedException
      */
-    public static String[] getLemma(String[] words, String[] tags) {
-        InputStream modelIn = null;
-        String[] lemmas = null;
-        try {
-            modelIn = new FileInputStream("en-lemmatizer.bin");
-            LemmatizerME lemmatizer = new LemmatizerME(new LemmatizerModel(modelIn));
-            if (words.length != tags.length) {
-                return null;
-            } else {
-                lemmas = lemmatizer.lemmatize(words, tags);
-                return lemmas;
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String[] getLemma(String[] words, String[] tags) throws ModuleNotInitializedException {
+
+        if (this.lemmatizer != null)
+        {
+            return this.lemmatizer.lemmatize(words, tags);
         }
-        return null;
+        else
+        {
+            throw new ModuleNotInitializedException("Lemmatizer-module not initialized!");
+        }
     }
 
     /**
      * Method to split all sentences in the text to a ArrayList
      *
      * @return ArrayList with all sentences of the text
-     * @throws IOException
+     * @throws ModuleNotInitializedException
      */
-    public static String[] sentenceSplitter(final String text) throws IOException {
-        //initialize InputStream and load model file
-        InputStream modelIn = new FileInputStream("en-sent.bin");
-        try {
-            //initialize the SentenceModel and the SentenceDetector
-            final SentenceModel sentenceModel = new SentenceModel(modelIn);
-            SentenceDetectorME sentenceDetector = new SentenceDetectorME(sentenceModel);
+    public String[] splitSentences(final String text) throws ModuleNotInitializedException {
 
-            //Split the String text into a StringArray, where every sentence is an element in the Array
-            String[] sentences = sentenceDetector.sentDetect(text);
-
-            return sentences;
-        } catch (final IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (modelIn != null) {
-                try {
-                    modelIn.close();
-                } catch (final IOException e) {
-
-                }
-            }
+        if (this.splitter != null)
+        {
+            return this.splitter.sentDetect(text);
         }
-        return null;
+        else
+        {
+            throw new ModuleNotInitializedException("Splitter-module not initialized!");
+        }
     }
 }

@@ -1,5 +1,6 @@
 package gui;
 
+import backend.exceptions.ModuleNotInitializedException;
 import searcher.datatype.SearchResult;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -29,8 +30,14 @@ Constructor for sentence class for the TableView
     public Sentence(final int id, final SearchResult searchResult, final int neighbours)
     {
         this.id.set(Integer.toString(id));
-//        this.sentence.set(searchResult.getTargetInSentence());
-        this.sentence.set(searchResult.getTargetInSentenceShort(neighbours));
+        try
+        {
+            this.sentence.set(searchResult.getTargetInSentenceShort(neighbours));
+        }
+        catch (ModuleNotInitializedException e)
+        {
+            this.sentence.set(searchResult.getTargetInSentence());
+        }
         this.posTag.set(searchResult.getTargetTag());
         this.preTag.set(searchResult.getPrecTag());
         this.folTag.set(searchResult.getFolTag());

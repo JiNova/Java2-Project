@@ -1,18 +1,29 @@
 package main;
 
+import backend.Parser;
+import gui.util.GUIUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class Main extends Application {
-/**
-Loads the GUI from FXML file 
-*/
+
+    private static Parser parser = new Parser();
+
+    public static Parser getParser() {
+
+        return parser;
+    }
+
+    /**
+     Loads the GUI from FXML file and sets up parser
+     */
     public void start(Stage primaryStage) throws IOException {
         Parent root;
 
@@ -25,15 +36,25 @@ Loads the GUI from FXML file
             primaryStage.getIcons().add(new Image("file:icon.png"));
             primaryStage.sizeToScene();
             primaryStage.setTitle("Search and Enjoy");
+
+            parser.setTagger("en-pos-maxent.bin");
+            parser.setTokenizer("en-token.bin");
+            parser.setLemmatizer("en-lemmatizer.bin");
+            parser.setSplitter("en-sent.bin");
+
             primaryStage.show();
+
         } catch (IOException e) {
-            e.printStackTrace();
-            return;
+
+            GUIUtil.showAlert(Alert.AlertType.ERROR, "Could not load a critical file! The program will now exit.", e.getMessage());
+            System.exit(1);
         }
     }
-/**
-Is used just as main method doesnt do anything else
-*/
+
+    /**
+     * Launches the actual JavaFX-Scene
+     * @param args
+     */
     public static void main(String[] args) {
 
         launch(args);
