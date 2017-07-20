@@ -1,6 +1,8 @@
 package gui;
 
 import backend.TextProviderFactory;
+import gui.util.GUIUtil;
+import javafx.collections.FXCollections;
 import searcher.Searcher;
 import searcher.datatype.SearchResult;
 import javafx.collections.ObservableList;
@@ -25,13 +27,18 @@ public class Controller {
 
     private static final int SPLIT_NUMBER = 2;
     private static final int TARGET_WORD_NUMBER = 3;
+    private static final int NEIGHBOUR_DEFAULT = 2;
 
-    private boolean fetchFromFile = false;
+    private boolean fetchFromFile = true;
 
     @FXML
     private TextField url;
     @FXML
     private TextField keyword;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private ComboBox neighbours;
     @FXML
     private TableView<Sentence> table;
     @FXML
@@ -43,6 +50,15 @@ public class Controller {
     private void initialize() {
 
         url.textProperty().addListener((observableValue, oldUrl, newUrl) -> {
+
+            if (newUrl.isEmpty())
+            {
+                searchButton.setDisable(true);
+            }
+            else
+            {
+                searchButton.setDisable(false);
+            }
 
             if (fetchFromFile && newUrl.startsWith("http"))
             {
@@ -81,6 +97,13 @@ public class Controller {
                 }
             }
         });
+
+        ObservableList<Integer> neighbourOpt = FXCollections.observableArrayList(
+                1, 2, 3, 4, 5
+        );
+
+        this.neighbours.getItems().addAll(neighbourOpt);
+        this.neighbours.getSelectionModel().select(NEIGHBOUR_DEFAULT - 1);
     }
 
     @FXML
@@ -107,14 +130,19 @@ public class Controller {
         final String key = keyword.getText();
         final String urlField = url.getText();
 
+        if (key == null || key.isEmpty())
+        {
+            GUIUtil.showAlert(Alert.AlertType.ERROR, "No keyword",
+                    "Please specify a keyword to search for!");
+
+            return;
+        }
+
         if (Pattern.compile("(.*)[^0-9A-Za-zßÄÖÜäöü](.*)").matcher(key).find()) {
 
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Invalid character");
-            alert.setHeaderText(null);
-            alert.setContentText("You may only search for words consisting of letters and digits!");
+            GUIUtil.showAlert(Alert.AlertType.ERROR, "Invalid character",
+                    "You may only search for words consisting of letters and digits!");
 
-            alert.showAndWait();
             return;
         }
 
@@ -123,20 +151,17 @@ public class Controller {
         try {
             results = Searcher.searchForTarget(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
         } catch (IOException e1) {
-            e1.printStackTrace();
+
+            GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", e1.getMessage());
             return;
         }
 
         if (results.size() == 0)
         {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("No Result");
-            alert.setHeaderText(null);
-            alert.setContentText("Unfortunately, we unable to find the provided keyword. Sad :(");
-
             System.out.println((System.nanoTime() - startTime) / 1000000000.0 + " seconds");
+            GUIUtil.showAlert(Alert.AlertType.INFORMATION, "No Result",
+                    "Unfortunately, we were unable to find the provided keyword. Sad :(");
 
-            alert.showAndWait();
             return;
         }
 

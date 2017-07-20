@@ -37,7 +37,7 @@ public class Parser {
      * @throws FileNotFoundException
      */
     public static String[] getPosTag(String[] input) {
-        System.out.println("Tagging...");
+
         //initialize inputstream
         InputStream inputStream = null;
 
