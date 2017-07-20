@@ -168,8 +168,16 @@ public class Controller {
 
         ArrayList<SearchResult> results;
 
-        try {
-            results = Searcher.searchForTargetWord(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
+        try
+        {
+            if (this.searchForWord)
+            {
+                results = Searcher.searchForTargetWord(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
+            }
+            else
+            {
+                results = Searcher.searchForTargetLemma(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
+            }
         } catch (IOException e1) {
 
             GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", e1.getMessage());

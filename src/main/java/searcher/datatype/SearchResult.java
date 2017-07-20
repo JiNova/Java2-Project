@@ -107,30 +107,30 @@ public class SearchResult
         String[] shortSentenceParts = Arrays.copyOfRange(sentenceParts, maxPreNeighborId, maxFolNeighborId+1);
         String[] shortSentenceTags = Parser.getPosTag(shortSentenceParts);
 
-        String sentence = (maxPreNeighborId > 0 ? "[..] " : "");
+        StringBuilder sentence = new StringBuilder((maxPreNeighborId > 0 ? "[..] " : ""));
 
         for (int i = 0; i < shortSentenceParts.length; i ++)
         {
             if (shortSentenceParts[i].equalsIgnoreCase(targetWord))
             {
-                sentence += "%" + shortSentenceParts[i] + "%";
+                sentence.append("%").append(shortSentenceParts[i]).append("%");
             }
             else
             {
-                sentence += shortSentenceParts[i];
+                sentence.append(shortSentenceParts[i]);
             }
 
             if (i < (shortSentenceParts.length - 1))
             {
-                if(!shortSentenceTags[i+1].matches("[\\.,]"))
+                if(!shortSentenceTags[i+1].matches("[\\.,]|(POS)"))
                 {
-                    sentence += " ";
+                    sentence.append(" ");
                 }
             }
         }
 
-        sentence += (maxFolNeighborId < this.sentenceParts.length - 1 ? " [..]" : "");
+        sentence.append((maxFolNeighborId < this.sentenceParts.length - 1 ? " [..]" : ""));
 
-        return sentence;
+        return sentence.toString();
     }
 }
