@@ -1,6 +1,6 @@
 package gui;
 
-import backend.datatype.SearchResult;
+import searcher.datatype.SearchResult;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Sentence {

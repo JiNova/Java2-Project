@@ -1,7 +1,8 @@
 package gui;
 
-import backend.Searcher;
-import backend.datatype.SearchResult;
+import backend.TextProviderFactory;
+import searcher.Searcher;
+import searcher.datatype.SearchResult;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -81,15 +82,6 @@ public class Controller {
     }
 
     @FXML
-    public void fetch(ActionEvent e)
-    {
-        if (this.fetchFromFile)
-        {
-
-        }
-    }
-
-    @FXML
     public void open(ActionEvent e)
     {
         FileChooser fileChooser = new FileChooser();
@@ -109,9 +101,9 @@ public class Controller {
     @FXML
     public void search(ActionEvent e) {
 
-        long startTime = System.nanoTime();
-        String key = keyword.getText();
-        String urlField = url.getText();
+        final long startTime = System.nanoTime();
+        final String key = keyword.getText();
+        final String urlField = url.getText();
 
         if (Pattern.compile("(.*)[^0-9A-Za-zßÄÖÜäöü](.*)").matcher(key).find()) {
 
@@ -127,7 +119,7 @@ public class Controller {
         ArrayList<SearchResult> results;
 
         try {
-            results = Searcher.searchForTarget(key);
+            results = Searcher.searchForTarget(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
         } catch (IOException e1) {
             e1.printStackTrace();
             return;

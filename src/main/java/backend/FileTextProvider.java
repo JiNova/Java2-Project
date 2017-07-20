@@ -1,9 +1,6 @@
 package backend;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 
 public class FileTextProvider implements TextProvider {
 
@@ -28,8 +25,8 @@ public class FileTextProvider implements TextProvider {
     }
 
     @Override
-    public InputStream getContentStream() throws FileNotFoundException {
+    public FileReader getContentReader() throws FileNotFoundException {
 
-        return new FileInputStream(this.file);
+        return new FileReader(this.file);
     }
 }

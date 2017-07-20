@@ -1,9 +1,9 @@
 package backend;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.FileReader;
 
 public interface TextProvider {
 
-    InputStream getContentStream() throws FileNotFoundException;
+    FileReader getContentReader() throws FileNotFoundException;
 }

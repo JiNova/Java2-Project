@@ -1,46 +1,33 @@
-package backend;
+package searcher;
 
 /**
  * Created by Daniela on 12.07.2017.
  */
 
-import backend.datatype.SearchResult;
+import backend.Parser;
+import backend.TextProvider;
+import backend.TextProviderFactory;
+import searcher.datatype.SearchResult;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileNotFoundException;
-import java.util.Scanner;
 import java.io.*;
 import java.util.*;
 
 
 public class Searcher {
 
-    /**
-     * Created by Ela on 11.07.2017.
-     * get word from user
-     * search for word occurrences in text
-     * save sentences in which word occurs
-     * search-word will be put in all capital letters
-     * take each sentence and get (classify) POS-tag for each case of the word -> print
-     * count how often word occurs as particular tags -> print
-     * check all sentences and get all preceding tags, list them and count -> print
-     * check all sentences and get all following tags, list them and count -> print
-     * search for Lemma or Actual Form (whatever user chooses) (or maybe we just do for actual form first)
-     */
-
-    /**
-     * search the array for the target word, and get the sentences in which the word occurs
-     * return null if no sentence was found with the word
-     * return sentences in which word occurs
-     */
-    public static ArrayList<SearchResult> searchForTarget(final String targetWord) throws IOException {
+    public static ArrayList<SearchResult> searchForTarget(final String targetWord, final String path, final TextProviderFactory.PROVIDER_TYPES providerType) throws IOException {
 
         System.out.println("Searching for " +targetWord);
 
         BufferedReader br = null;
 
         try {
-            br = new BufferedReader(new FileReader("text.txt"));
+
+            TextProvider provider = TextProviderFactory.getTextProvider(path, providerType);
+
+            br = new BufferedReader(provider.getContentReader());
 
             String[] wordsOnLine;
             String line;

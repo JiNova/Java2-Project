@@ -71,7 +71,6 @@ public class Parser {
      */
     public static String[] tokenizer(String input)
     {
-        System.out.println("Tokenizing...");
         //initialize InputStream
         InputStream modelIn = null;
         try {
@@ -96,27 +95,6 @@ public class Parser {
         }
         return null;
     }
-
-    /**
-     * Returns a String of all words of the text in the same order as well as the tags
-     *
-     * @param tokensToPrint get all tokens of the text
-     * @param tagsToPrint   get all tags of the tokens
-     * @return a String to see the input text of the beginning with all its tags
-     */
-//    public String toString(ArrayList<String[]> tokensToPrint, ArrayList<String[]> tagsToPrint){
-//        String result = "";
-//
-//        if(tokensToPrint != null && tagsToPrint!=null){
-//            for(int i=0;i < sentences.size();i++){
-//                for(int j=0;j<tokensToPrint.get(i).length;j++){
-//                    result += tokensToPrint.get(i).clone()[j] + "_" + tagsToPrint.get(i).clone()[j] + " ";
-//                }
-//            }
-//            return result;
-//        }
-//        return null;
-//    }
 
 
     /**
@@ -151,7 +129,6 @@ public class Parser {
      * @return StringArray that cointains all lemmas
      */
     public static String[] getLemma(String[] words, String[] tags){
-        System.out.println("Lemmatizing...");
         InputStream modelIn=null;
         String[] lemmas = null;
         try{
@@ -179,7 +156,6 @@ public class Parser {
      */
     public static String[] sentenceSplitter(final String text) throws IOException
     {
-        System.out.println("Splitting sentences...");
         //initialize InputStream and load model file
         InputStream modelIn = new FileInputStream("en-sent.bin");
         try {

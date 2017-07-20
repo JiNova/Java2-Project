@@ -33,6 +33,22 @@ public class WebTextProvider extends FileTextProvider implements TextProvider {
             throw new NoTextFoundException("WebTextProvider could not find any text-content!");
         }
 
+        makeCacheDir();
+        saveWebContentToFile();
+    }
+
+    private void makeCacheDir()
+    {
+        File cacheDir = new File("cache");
+
+        if (!cacheDir.exists() || !cacheDir.isDirectory())
+        {
+            cacheDir.mkdir();
+        }
+    }
+
+    private void saveWebContentToFile() throws IOException
+    {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd");
         LocalDateTime now = LocalDateTime.now();
 
@@ -40,6 +56,8 @@ public class WebTextProvider extends FileTextProvider implements TextProvider {
 
         if (!this.file.exists())
         {
+            System.out.println("Article not in cache yet");
+
             BufferedWriter writer = null;
             try
             {

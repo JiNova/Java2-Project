@@ -1,4 +1,4 @@
-package backend.datatype;
+package searcher.datatype;
 
 import backend.Parser;
 
