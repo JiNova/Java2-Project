@@ -1,5 +1,9 @@
 package gui.util;
 
+/**
+ * Created by Andy on 19.07.2017
+ */
+
 import gui.Sentence;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;

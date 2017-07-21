@@ -113,8 +113,6 @@ public class Searcher {
      */
     public static ArrayList<SearchResult> searchForTargetLemma(final String targetLemma, final String path, final TextProviderFactory.PROVIDER_TYPES providerType) throws IOException, ModuleNotInitializedException {
 
-        System.out.println("Searching for lemma: " + targetLemma);
-
         BufferedReader br = null;
 
         try {

@@ -1,5 +1,9 @@
 package backend;
 
+/**
+ * Created by Andy on 16.07.2017
+ */
+
 import backend.exceptions.NoTextFoundException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -42,22 +46,22 @@ public class WebTextProvider extends FileTextProvider implements TextProvider {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd");
         LocalDateTime now = LocalDateTime.now();
 
-        this.file = new File("cache/" + title + "_" + dtf.format(now));
+        this.file = new File(CacheManager.getCachePath() + title + "_" + dtf.format(now));
 
         if (!this.file.exists()) {
-            System.out.println("Article not in cache yet");
 
             BufferedWriter writer = null;
             try {
                 writer = new BufferedWriter(new FileWriter(this.file));
 
                 for (Element element : this.pElements) {
-                    writer.append(element.text() + "\n");
+
+                    writer.append(element.text().replaceAll("\\[(\\d)+?]", "") + "\n");
                 }
 
                 if (this.captionElements != null) {
                     for (Element element : this.captionElements) {
-                        writer.append(element.text() + "\n");
+                        writer.append(element.text().replaceAll("\\[(\\d)+?]", "") + "\n");
                     }
                 }
             }

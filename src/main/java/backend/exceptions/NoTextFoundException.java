@@ -1,5 +1,9 @@
 package backend.exceptions;
 
+/**
+ * Created by Andy on 16.07.2017
+ */
+
 import java.io.IOException;
 
 public class NoTextFoundException extends IOException {

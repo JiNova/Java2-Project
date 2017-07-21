@@ -1,5 +1,9 @@
 package gui;
 
+/**
+ * Created by Julia on 11.07.2017
+ */
+
 import backend.exceptions.ModuleNotInitializedException;
 import javafx.beans.property.SimpleStringProperty;
 import searcher.datatype.SearchResult;
@@ -18,8 +22,8 @@ public class Sentence {
     private SimpleStringProperty id = new SimpleStringProperty("");
     private SimpleStringProperty sentence = new SimpleStringProperty("");
     private SimpleStringProperty posTag = new SimpleStringProperty("");
-    private SimpleStringProperty preTag = new SimpleStringProperty("");
-    private SimpleStringProperty folTag = new SimpleStringProperty("");
+    private SimpleStringProperty preTag = new SimpleStringProperty("None");
+    private SimpleStringProperty folTag = new SimpleStringProperty("None");
     private SimpleStringProperty lemma = new SimpleStringProperty("");
 
     /**

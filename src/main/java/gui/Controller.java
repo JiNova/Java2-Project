@@ -1,5 +1,10 @@
 package gui;
 
+/**
+ * Created by Julia on 11.07.2017
+ * Modified by Andy
+ */
+
 import backend.TextProviderFactory;
 import backend.exceptions.ModuleNotInitializedException;
 import gui.util.GUIUtil;
@@ -44,6 +49,8 @@ public class Controller {
 
     private ToggleGroup searchMethod = new ToggleGroup();
 
+    @FXML
+    private Label searchLabel;
     @FXML
     private TextField url;
     @FXML
@@ -134,11 +141,11 @@ public class Controller {
                     if (null != newToggle) {
                         if ("search_word".equals(newToggle.getUserData())) {
                             this.searchForWord = true;
-                            System.out.println("Word search selected");
+                            searchLabel.setText("Keyword:");
                         }
                         else {
                             this.searchForWord = false;
-                            System.out.println("Lemma search selected");
+                            searchLabel.setText("Lemma:");
                         }
                     }
                 });

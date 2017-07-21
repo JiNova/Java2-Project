@@ -20,7 +20,7 @@
             <children>
                 <AnchorPane prefHeight="70.0" prefWidth="260.0">
                     <children>
-                        <Label text="Keyword:" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+                        <Label fx:id="searchLabel" text="Keyword:" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
                             <font>
                                 <Font size="14.0" />
                             </font>

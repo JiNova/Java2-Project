@@ -1,5 +1,9 @@
 package backend;
 
+/**
+ * Created by Andy on 16.07.2017
+ */
+
 import java.io.*;
 
 public class FileTextProvider implements TextProvider {

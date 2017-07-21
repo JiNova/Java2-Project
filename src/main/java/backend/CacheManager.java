@@ -1,12 +1,22 @@
 package backend;
 
+/**
+ * Created by Andy on 18.07.2017
+ */
+
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class CacheManager {
 
+    private static final String cachePath = "cache/";
     private static File cacheDir = new File("cache");
+
+    static String getCachePath() {
+
+        return cachePath;
+    }
 
     static void makeCacheDir() {
 
@@ -15,6 +25,9 @@ public class CacheManager {
         }
     }
 
+    /**
+     * Clean the cache-folder
+     */
     public static void cleanCache() {
 
         if (cacheDir.exists()) {
@@ -28,8 +41,7 @@ public class CacheManager {
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd");
                     LocalDateTime now = LocalDateTime.now();
 
-                    if(!file.getName().endsWith(dtf.format(now)))
-                    {
+                    if (!file.getName().endsWith(dtf.format(now))) {
                         file.delete();
                     }
                 }

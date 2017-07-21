@@ -27,6 +27,12 @@ public class Parser {
     private LemmatizerME lemmatizer     = null;
     private SentenceDetectorME splitter = null;
 
+    /**
+     * Set up the tagger-module
+     *
+     * @param posModelFile Path to the model-file
+     * @throws IOException
+     */
     public void setTagger(final String posModelFile) throws IOException {
 
         InputStream taggerStream = null;
@@ -54,6 +60,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Set up the tokenizer-module
+     *
+     * @param tokenModelFile Path to the model-file
+     * @throws IOException
+     */
     public void setTokenizer(final String tokenModelFile) throws IOException {
 
         InputStream tokenStream = null;
@@ -81,6 +93,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Set up the lemmatizer-module
+     *
+     * @param lemmaModelFile Path to the model-file
+     * @throws IOException
+     */
     public void setLemmatizer(final String lemmaModelFile) throws IOException {
         InputStream lemmaStream = null;
 
@@ -107,6 +125,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Set up the sentence-splitter-module
+     *
+     * @param splitterModelFile Path to the model-file
+     * @throws IOException
+     */
     public void setSplitter( final String splitterModelFile) throws IOException {
 
         InputStream splitterStream = null;
