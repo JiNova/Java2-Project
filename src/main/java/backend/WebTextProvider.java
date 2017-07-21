@@ -29,68 +29,48 @@ public class WebTextProvider extends FileTextProvider implements TextProvider {
 
         this.captionElements = document.select("div.thumbcaption");
 
-        if (this.pElements == null)
-        {
+        if (this.pElements == null) {
             throw new NoTextFoundException("WebTextProvider could not find any text-content!");
         }
 
-        makeCacheDir();
+        CacheManager.makeCacheDir();
         saveWebContentToFile();
     }
 
-    private void makeCacheDir()
-    {
-        File cacheDir = new File("cache");
+    private void saveWebContentToFile() throws IOException {
 
-        if (!cacheDir.exists() || !cacheDir.isDirectory())
-        {
-            cacheDir.mkdir();
-        }
-    }
-
-    private void saveWebContentToFile() throws IOException
-    {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd");
         LocalDateTime now = LocalDateTime.now();
 
-        this.file = new File("cache/"+title+"_"+dtf.format(now));
+        this.file = new File("cache/" + title + "_" + dtf.format(now));
 
-        if (!this.file.exists())
-        {
+        if (!this.file.exists()) {
             System.out.println("Article not in cache yet");
 
             BufferedWriter writer = null;
-            try
-            {
-                writer =  new BufferedWriter(new FileWriter(this.file));
+            try {
+                writer = new BufferedWriter(new FileWriter(this.file));
 
-                for (Element element : this.pElements)
-                {
-                    writer.append(element.text() +"\n");
+                for (Element element : this.pElements) {
+                    writer.append(element.text() + "\n");
                 }
 
-                if (this.captionElements != null)
-                {
-                    for (Element element : this.captionElements)
-                    {
-                        writer.append(element.text() +"\n");
+                if (this.captionElements != null) {
+                    for (Element element : this.captionElements) {
+                        writer.append(element.text() + "\n");
                     }
                 }
             }
-            catch (IOException e)
-            {
+            catch (IOException e) {
                 throw e;
             }
             finally {
-                try
-                {
-                    if (writer != null)
-                    {
+                try {
+                    if (writer != null) {
                         writer.close();
                     }
                 }
-                catch (IOException e)
-                {
+                catch (IOException e) {
                     throw e;
                 }
             }

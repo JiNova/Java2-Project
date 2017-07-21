@@ -1,5 +1,6 @@
 package main;
 
+import backend.CacheManager;
 import backend.Parser;
 import gui.util.GUIUtil;
 import javafx.application.Application;
@@ -41,6 +42,8 @@ public class Main extends Application {
             parser.setTokenizer("en-token.bin");
             parser.setLemmatizer("en-lemmatizer.bin");
             parser.setSplitter("en-sent.bin");
+
+            CacheManager.cleanCache();
 
             primaryStage.show();
 
