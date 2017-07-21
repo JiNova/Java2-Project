@@ -43,7 +43,7 @@ public class Main extends Application {
             primaryStage.setScene(scene1);
             primaryStage.getIcons().add(new Image("file:icon.png"));
             primaryStage.sizeToScene();
-            primaryStage.setTitle("Search and Enjoy");
+            primaryStage.setTitle("Search and Tag");
 
             parser.setTagger("en-pos-maxent.bin");
             parser.setTokenizer("en-token.bin");
