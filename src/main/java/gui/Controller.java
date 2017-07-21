@@ -117,18 +117,6 @@ public class Controller {
 
                         setGraphic(GUIUtil.buildTextFlow(showSentence, targetWord));
                         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-
-                        Tooltip tooltip = new Tooltip();
-                        try {
-                            String lemma = Main.getParser().getLemma(new String[]{targetWord}, Main.getParser().getPosTag(new String[]{targetWord}))[0];
-
-                            tooltip.setText("Search-word lemma: " + lemma);
-                            setTooltip(tooltip);
-                        }
-                        catch (ModuleNotInitializedException e) {
-                            GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", "Parser modules not initialized");
-                        }
-
                     }
                     else {
                         System.out.println(sentence);

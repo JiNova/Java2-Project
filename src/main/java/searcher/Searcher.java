@@ -4,6 +4,7 @@ package searcher;
  * Created by Daniela on 12.07.2017.
  */
 
+import backend.Parser;
 import backend.TextProvider;
 import backend.TextProviderFactory;
 import backend.exceptions.ModuleNotInitializedException;
@@ -203,7 +204,7 @@ public class Searcher {
         String words[] = {precWord, word, folWord};
         Map<String, String> wordsAndTags = Main.getParser().getWordsTag(words);
 
-        String lemma = Main.getParser().getLemma(new String[]{word}, new String[]{wordsAndTags.get(word)})[0];
+        String lemma = Main.getParser().getLemma(sentenceParts, Main.getParser().getPosTag(sentenceParts))[wordIndex];
 
         result.setTargetTag(wordsAndTags.get(word));
         result.setPrecTag(wordsAndTags.get(precWord));
