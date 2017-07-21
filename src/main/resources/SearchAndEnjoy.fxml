@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
     <children>
@@ -114,5 +115,29 @@
                 <Button layoutX="650.0" layoutY="1.0" mnemonicParsing="false" text="Save..." AnchorPane.rightAnchor="0.0" />
             </children>
         </AnchorPane>
+      <AnchorPane fx:id="miscBar" prefHeight="20.0" prefWidth="800.0" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="580.0">
+         <children>
+            <Label text="Sourcemode:" AnchorPane.leftAnchor="5.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Text fx:id="sourceMode" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Text>
+            <Label fx:id="searchTimeLabel" text="Last search-request:" visible="false" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Text fx:id="searchTime" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" visible="false" wrappingWidth="95.00000476837158" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

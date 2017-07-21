@@ -13,11 +13,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import main.Main;
 import searcher.Searcher;
 import searcher.datatype.SearchResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +35,9 @@ public class Controller {
     private final ObservableList<Integer> neighbourOpt = FXCollections.observableArrayList(
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     );
+
+    private static final String FILE_MODE_DESC = "File";
+    private static final String HTTP_MODE_DESC = "http";
 
     private boolean fetchFromFile = true;
     private boolean searchForWord = true;
@@ -57,6 +62,12 @@ public class Controller {
     private TableColumn<Sentence, String> sentenceColumn;
     @FXML
     private AnchorPane miscButtons;
+    @FXML
+    private Text sourceMode;
+    @FXML
+    private Label searchTimeLabel;
+    @FXML
+    private Text searchTime;
 
     @FXML
     private void initialize() {
@@ -71,6 +82,12 @@ public class Controller {
 
             if (fetchFromFile && newUrl.startsWith("http")) {
                 fetchFromFile = false;
+                sourceMode.setText(HTTP_MODE_DESC);
+            }
+            else if(!fetchFromFile && !newUrl.startsWith("http"))
+            {
+                fetchFromFile = true;
+                sourceMode.setText(FILE_MODE_DESC);
             }
         });
 
@@ -95,6 +112,19 @@ public class Controller {
 
                         setGraphic(buildTextFlow(showSentence, targetWord));
                         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+                        Tooltip tooltip = new Tooltip();
+                        try {
+                            String lemma = Main.getParser().getLemma(new String[]{targetWord}, Main.getParser().getPosTag(new String[]{targetWord}))[0];
+
+                            tooltip.setText("Search-word lemma: " + lemma);
+                            setTooltip(tooltip);
+                        }
+                        catch (ModuleNotInitializedException e)
+                        {
+                            GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", "Parser modules not initialized");
+                        }
+
                     } else {
                         System.out.println(sentence);
                         setText("Something is wrong with result-handling!");
@@ -125,9 +155,10 @@ public class Controller {
         this.wordButton.setToggleGroup(this.searchMethod);
         this.lemmaButton.setToggleGroup(this.searchMethod);
 
-
         this.neighbours.getItems().addAll(neighbourOpt);
         this.neighbours.getSelectionModel().select(NEIGHBOUR_DEFAULT - 1);
+
+        this.sourceMode.setText("File");
     }
 
     @FXML
@@ -137,9 +168,9 @@ public class Controller {
 
         if (selectedFile != null) {
 
-            System.out.println("File selected: " + selectedFile.getAbsolutePath());
             this.url.setText(selectedFile.getAbsolutePath());
             this.fetchFromFile = true;
+            this.sourceMode.setText(FILE_MODE_DESC);
         } else {
             System.out.println("File selection cancelled.");
         }
@@ -180,14 +211,9 @@ public class Controller {
                 results = Searcher.searchForTargetLemma(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
             }
         }
-        catch (IOException e1) {
+        catch (IOException | ModuleNotInitializedException e1) {
 
             GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", e1.getMessage());
-            return;
-        }
-        catch(ModuleNotInitializedException e2)
-        {
-            GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", e2.getMessage());
             return;
         }
 
@@ -210,7 +236,10 @@ public class Controller {
         }
 
         miscButtons.setVisible(true);
-        System.out.println((System.nanoTime() - startTime) / 1000000000.0 + " seconds");
+        String time = new DecimalFormat("#.#### seconds").format((System.nanoTime() - startTime) / 1000000000.0);
+        searchTimeLabel.setVisible(true);
+        searchTime.setText(time);
+        searchTime.setVisible(true);
     }
 
     @FXML
@@ -243,6 +272,9 @@ public class Controller {
         url.clear();
         keyword.clear();
         miscButtons.setVisible(false);
+        searchTimeLabel.setVisible(false);
+        searchTime.setText("");
+        searchTime.setVisible(false);
     }
 
     private TextFlow buildTextFlow(final String sentence, final String targetWord) {
