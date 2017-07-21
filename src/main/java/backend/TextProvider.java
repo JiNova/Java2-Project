@@ -7,6 +7,9 @@ package backend;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+/**
+ * TextProvider interface
+ */
 public interface TextProvider {
 
     FileReader getContentReader() throws FileNotFoundException;

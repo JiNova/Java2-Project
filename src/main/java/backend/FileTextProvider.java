@@ -6,6 +6,9 @@ package backend;
 
 import java.io.*;
 
+/**
+ * Loads text-conent from a local file
+ */
 public class FileTextProvider implements TextProvider {
 
     String path = "";
@@ -16,6 +19,12 @@ public class FileTextProvider implements TextProvider {
 
     }
 
+    /**
+     * Sets up text-provider to provide text from a local file (text-file)
+     *
+     * @param path Path to the file
+     * @throws FileNotFoundException
+     */
     public FileTextProvider(final String path) throws FileNotFoundException {
 
         this.file = new File(path);
@@ -28,6 +37,11 @@ public class FileTextProvider implements TextProvider {
         this.path = path;
     }
 
+    /**
+     * Provides the text-content-stream from the selected text-source
+     * @return
+     * @throws FileNotFoundException
+     */
     @Override
     public FileReader getContentReader() throws FileNotFoundException {
 

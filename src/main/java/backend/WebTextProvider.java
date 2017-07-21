@@ -17,12 +17,22 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Parses a website with Jsoup and saves it as a local file, utilizing the cache manager
+ * Is optimized to work with wikipedia (english)
+ */
 public class WebTextProvider extends FileTextProvider implements TextProvider {
 
     private String title = "";
     private Elements pElements = null;
     private Elements captionElements = null;
 
+    /**
+     * Load text-content from a website (wikipedia) and saves it to a local file
+     *
+     * @param url The link to the website
+     * @throws IOException
+     */
     public WebTextProvider(final String url) throws IOException {
 
         Document document = Jsoup.connect(url).get();

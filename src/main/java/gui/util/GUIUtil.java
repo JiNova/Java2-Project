@@ -19,6 +19,9 @@ import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Helper class for the gui
+ */
 public class GUIUtil {
 
     /**

@@ -6,6 +6,9 @@ package backend.exceptions;
 
 import java.io.IOException;
 
+/**
+ * Gets thrown if the WebTextProvider cannot find any text-content on a provided wikipedia-link
+ */
 public class NoTextFoundException extends IOException {
 
     public NoTextFoundException(final String message)

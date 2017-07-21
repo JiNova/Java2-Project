@@ -8,6 +8,9 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Helper class to rudimntarily manage the programs webpage caching
+ */
 public class CacheManager {
 
     private static final String cachePath = "cache/";

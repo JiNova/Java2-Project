@@ -17,6 +17,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Application entry-class
+ */
 public class Main extends Application {
 
     private static Parser parser = new Parser();

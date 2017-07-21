@@ -14,6 +14,14 @@ public class TextProviderFactory {
         WEB
     }
 
+    /**
+     * Returns the wanted TextProvider-instance
+     *
+     * @param path Path/url to the file/webpage, the text-provider should provide
+     * @param type TextProvider-type, file or web
+     * @return
+     * @throws IOException
+     */
     public static TextProvider getTextProvider(final String path, final PROVIDER_TYPES type) throws IOException {
 
         switch (type)

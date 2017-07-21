@@ -20,6 +20,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class for all handling of the text, utilizing the OpenNLP-framework
+ */
 public class Parser {
 
     private POSTaggerME tagger          = null;
