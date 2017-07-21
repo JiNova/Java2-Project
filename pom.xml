@@ -6,7 +6,7 @@
 
     <groupId>de.tuebingen.sfs</groupId>
     <artifactId>java2-teamproject</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>1.0</version>
     <dependencies>
         <dependency>
             <groupId>org.apache.opennlp</groupId>
