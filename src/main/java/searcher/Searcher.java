@@ -171,9 +171,12 @@ public class Searcher {
         String words[] = {precWord, word, folWord};
         Map<String, String> wordsAndTags = Main.getParser().getWordsTag(words);
 
+        String lemma = Main.getParser().getLemma(new String[]{word}, new String[]{wordsAndTags.get(word)})[0];
+
         result.setTargetTag(wordsAndTags.get(word));
         result.setPrecTag(wordsAndTags.get(precWord));
         result.setFolTag(wordsAndTags.get(folWord));
+        result.setLemma(lemma);
 
         return result;
     }

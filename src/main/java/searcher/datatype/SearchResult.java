@@ -18,6 +18,7 @@ public class SearchResult
     private String      targetTag;
     private String      precTag;
     private String      folTag;
+    private String      lemma;
 
     public SearchResult(final int wordId, final String targetWord, final String targetSentence, final String[] sentenceParts)
     {
@@ -134,5 +135,13 @@ public class SearchResult
         sentence.append((maxFolNeighborId < this.sentenceParts.length - 1 ? " [..]" : ""));
 
         return sentence.toString();
+    }
+
+    public String getLemma() {
+        return lemma;
+    }
+
+    public void setLemma(String lemma) {
+        this.lemma = lemma;
     }
 }

@@ -16,18 +16,12 @@ SimpleStringProperty to be used for TableView
     private SimpleStringProperty posTag = new SimpleStringProperty("");
     private SimpleStringProperty preTag = new SimpleStringProperty("");
     private SimpleStringProperty folTag = new SimpleStringProperty("");
+    private SimpleStringProperty lemma = new SimpleStringProperty("");
 
-    public Sentence(final String sentence, final String posTag, final String preTag, final String folTag) {
-
-        this.sentence.set(sentence);
-        this.posTag.set(posTag);
-        this.preTag.set(preTag);
-        this.folTag.set(folTag);
-    }
 /**
 Constructor for sentence class for the TableView  
 */
-    public Sentence(final int id, final SearchResult searchResult, final int neighbours)
+    Sentence(final int id, final SearchResult searchResult, final int neighbours)
     {
         this.id.set(Integer.toString(id));
         try
@@ -93,5 +87,17 @@ Getters and setters
 
     public void setNeighbours(int neighbours) {
         this.neighbours = neighbours;
+    }
+
+    public String getLemma() {
+        return lemma.get();
+    }
+
+    public SimpleStringProperty lemmaProperty() {
+        return lemma;
+    }
+
+    public void setLemma(String lemma) {
+        this.lemma.set(lemma);
     }
 }

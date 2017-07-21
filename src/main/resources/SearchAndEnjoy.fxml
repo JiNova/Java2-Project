@@ -112,7 +112,7 @@
         <AnchorPane fx:id="miscButtons" layoutX="25.0" layoutY="550.0" prefHeight="28.0" prefWidth="750.0" visible="false">
             <children>
                 <Button mnemonicParsing="false" onAction="#clean" prefHeight="27.0" prefWidth="68.0" text="Clear" AnchorPane.leftAnchor="0.0" />
-                <Button layoutX="650.0" layoutY="1.0" mnemonicParsing="false" text="Save..." AnchorPane.rightAnchor="0.0" />
+                <Button layoutX="650.0" layoutY="1.0" mnemonicParsing="false" onAction="#save" text="Save..." AnchorPane.rightAnchor="0.0" />
             </children>
         </AnchorPane>
       <AnchorPane fx:id="miscBar" prefHeight="20.0" prefWidth="800.0" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="580.0">

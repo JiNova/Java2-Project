@@ -17,8 +17,7 @@ import main.Main;
 import searcher.Searcher;
 import searcher.datatype.SearchResult;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -32,13 +31,14 @@ public class Controller {
     private static final int SPLIT_NUMBER = 2;
     private static final int TARGET_WORD_NUMBER = 3;
     private static final int NEIGHBOUR_DEFAULT = 2;
-    private final ObservableList<Integer> neighbourOpt = FXCollections.observableArrayList(
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-    );
 
     private static final String FILE_MODE_DESC = "File";
     private static final String HTTP_MODE_DESC = "http";
+    private static final String KEY_WORD_PATTERN = "(.*)[^0-9A-Za-zßÄÖÜäöü](.*)";
 
+    private final ObservableList<Integer> neighbourOpt = FXCollections.observableArrayList(
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+    );
     private boolean fetchFromFile = true;
     private boolean searchForWord = true;
 
@@ -83,9 +83,7 @@ public class Controller {
             if (fetchFromFile && newUrl.startsWith("http")) {
                 fetchFromFile = false;
                 sourceMode.setText(HTTP_MODE_DESC);
-            }
-            else if(!fetchFromFile && !newUrl.startsWith("http"))
-            {
+            } else if (!fetchFromFile && !newUrl.startsWith("http")) {
                 fetchFromFile = true;
                 sourceMode.setText(FILE_MODE_DESC);
             }
@@ -119,9 +117,7 @@ public class Controller {
 
                             tooltip.setText("Search-word lemma: " + lemma);
                             setTooltip(tooltip);
-                        }
-                        catch (ModuleNotInitializedException e)
-                        {
+                        } catch (ModuleNotInitializedException e) {
                             GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", "Parser modules not initialized");
                         }
 
@@ -139,13 +135,10 @@ public class Controller {
         searchMethod.selectedToggleProperty().addListener(
                 (observable, oldToggle, newToggle) -> {
                     if (null != newToggle) {
-                        if ("search_word".equals(newToggle.getUserData()))
-                        {
+                        if ("search_word".equals(newToggle.getUserData())) {
                             this.searchForWord = true;
                             System.out.println("Word search selected");
-                        }
-                        else
-                        {
+                        } else {
                             this.searchForWord = false;
                             System.out.println("Lemma search selected");
                         }
@@ -164,6 +157,11 @@ public class Controller {
     @FXML
     public void open(ActionEvent e) {
         FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter filterText = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+        FileChooser.ExtensionFilter filterAll = new FileChooser.ExtensionFilter("All files", "*");
+        fileChooser.getExtensionFilters().add(filterText);
+        fileChooser.getExtensionFilters().add(filterAll);
+
         File selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
@@ -171,8 +169,6 @@ public class Controller {
             this.url.setText(selectedFile.getAbsolutePath());
             this.fetchFromFile = true;
             this.sourceMode.setText(FILE_MODE_DESC);
-        } else {
-            System.out.println("File selection cancelled.");
         }
     }
 
@@ -184,13 +180,16 @@ public class Controller {
         final String urlField = url.getText();
 
         if (key == null || key.isEmpty()) {
-            GUIUtil.showAlert(Alert.AlertType.ERROR, "No keyword",
-                    "Please specify a keyword to search for!");
 
             return;
         }
 
-        if (Pattern.compile("(.*)[^0-9A-Za-zßÄÖÜäöü](.*)").matcher(key).find()) {
+        if (urlField == null || urlField.isEmpty())
+        {
+            return;
+        }
+
+        if (Pattern.compile(KEY_WORD_PATTERN).matcher(key).find()) {
 
             GUIUtil.showAlert(Alert.AlertType.ERROR, "Invalid character",
                     "You may only search for words consisting of letters and digits!");
@@ -200,25 +199,19 @@ public class Controller {
 
         ArrayList<SearchResult> results;
 
-        try
-        {
-            if (this.searchForWord)
-            {
+        try {
+            if (this.searchForWord) {
                 results = Searcher.searchForTargetWord(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
-            }
-            else
-            {
+            } else {
                 results = Searcher.searchForTargetLemma(key, urlField, (this.fetchFromFile ? TextProviderFactory.PROVIDER_TYPES.FILE : TextProviderFactory.PROVIDER_TYPES.WEB));
             }
-        }
-        catch (IOException | ModuleNotInitializedException e1) {
+        } catch (IOException | ModuleNotInitializedException e1) {
 
             GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", e1.getMessage());
             return;
         }
 
         if (results.size() == 0) {
-            System.out.println((System.nanoTime() - startTime) / 1000000000.0 + " seconds");
             GUIUtil.showAlert(Alert.AlertType.INFORMATION, "No Result",
                     "Unfortunately, we were unable to find the provided keyword. Sad :(");
 
@@ -232,7 +225,9 @@ public class Controller {
         }
 
         for (int i = 0; i < results.size(); i++) {
-            sentences.add(new Sentence((i + 1), results.get(i), (Integer) neighbours.getSelectionModel().getSelectedItem()));
+            Sentence sentence = new Sentence((i + 1), results.get(i), (Integer) neighbours.getSelectionModel().getSelectedItem());
+            sentence.setLemma(results.get(i).getLemma());
+            sentences.add(sentence);
         }
 
         miscButtons.setVisible(true);
@@ -244,20 +239,41 @@ public class Controller {
 
     @FXML
     public void save(ActionEvent e) {
-//        File file = new File("java.txt");
-//        try {
-//            BufferedWriter output = new BufferedWriter(new FileWriter(file));
-//            int i = 1;
-//            for (Sentence s : table.getItems()) {
-//                output.write(i + ". Sentence: " + s.getSentence() + " Preceeding Tag : " + s.getPreTag() + " Following Tag: " + s.getFolTag());
-//                i++;
-//                System.out.println(i + ". Sentence: " + s.getSentence() + " Preceeding Tag : " + s.getPreTag() + " Following Tag: " + s.getFolTag());
-//            }
-//            output.close();
-//            System.out.println("Finished Writing");
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Results");
+        File file = fileChooser.showSaveDialog(null);
+        if (file != null) {
+            PrintWriter output = null;
+
+            try {
+                 output = new PrintWriter((new FileWriter(file)));
+                int i = 1;
+                for (Sentence sentence : table.getItems()) {
+                    Pattern targetSentencePattern = Pattern.compile("(.*?)(%([^%\\s]*)%)(.*?)");
+                    Matcher targetWordMatcher = targetSentencePattern.matcher(sentence.getSentence());
+
+                    if (targetWordMatcher.find()) {
+                        String targetWord = targetWordMatcher.group(TARGET_WORD_NUMBER);
+
+                        output.write(i + ". Sentence: " + sentence.getSentence().replaceAll("%"+targetWord+"%", targetWord) + "\tLemma: " + sentence.getLemma() + "\tPreceeding Tag : "
+                                + sentence.getPreTag() + "\tFollowing Tag: " + sentence.getFolTag());
+                        output.println();
+                        i++;
+                    }
+                }
+            }
+            catch (IOException e1) {
+                GUIUtil.showAlert(Alert.AlertType.ERROR, "Error", e1.getMessage());
+            }
+            finally {
+                if (output != null)
+                {
+                    output.flush();
+                    output.close();
+                }
+            }
+        }
     }
 
     /**
