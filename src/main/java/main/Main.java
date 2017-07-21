@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Application entry-class
@@ -37,18 +38,26 @@ public class Main extends Application {
 
         try {
 
-            root = FXMLLoader.load(getClass().getClassLoader().getResource("SearchAndEnjoy.fxml"));
+            URL fxmlFile = getClass().getClassLoader().getResource("SearchAndEnjoy.fxml");
+
+            if (fxmlFile != null) {
+                root = FXMLLoader.load(fxmlFile);
+            }
+            else
+            {
+                throw new IOException("Could not load FXML-File!");
+            }
+
             Scene scene1 = new Scene(root);
             scene1.setRoot(root);
             primaryStage.setScene(scene1);
-            primaryStage.getIcons().add(new Image("file:icon.png"));
             primaryStage.sizeToScene();
             primaryStage.setTitle("Search and Tag");
 
-            parser.setTagger("en-pos-maxent.bin");
-            parser.setTokenizer("en-token.bin");
-            parser.setLemmatizer("en-lemmatizer.bin");
-            parser.setSplitter("en-sent.bin");
+            parser.setTagger(getClass().getClassLoader().getResource("en-pos-maxent.bin"));
+            parser.setTokenizer(getClass().getClassLoader().getResource("en-token.bin"));
+            parser.setLemmatizer(getClass().getClassLoader().getResource("en-lemmatizer.bin"));
+            parser.setSplitter(getClass().getClassLoader().getResource("en-sent.bin"));
 
             CacheManager.cleanCache();
 
@@ -56,7 +65,7 @@ public class Main extends Application {
 
         } catch (IOException e) {
 
-            GUIUtil.showAlert(Alert.AlertType.ERROR, "Could not load a critical file! The program will now exit.", e.getMessage());
+            GUIUtil.showAlert(Alert.AlertType.ERROR, "Could not load a critical file!", e.getMessage() + "\nThe program will now exit.");
             System.exit(1);
         }
     }

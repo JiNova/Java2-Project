@@ -14,11 +14,9 @@ import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URL;
 
 /**
  * Class for all handling of the text, utilizing the OpenNLP-framework
@@ -33,17 +31,17 @@ public class Parser {
     /**
      * Set up the tagger-module
      *
-     * @param posModelFile Path to the model-file
+     * @param posModelFile URL of the model-file
      * @throws IOException
      */
-    public void setTagger(final String posModelFile) throws IOException {
+    public void setTagger(final URL posModelFile) throws IOException {
 
         InputStream taggerStream = null;
 
         try
         {
             //initialize tagger
-            taggerStream = new FileInputStream(posModelFile);
+            taggerStream = posModelFile.openStream();
             POSModel posModel = new POSModel(taggerStream);
             this.tagger = new POSTaggerME(posModel);
         }
@@ -66,16 +64,16 @@ public class Parser {
     /**
      * Set up the tokenizer-module
      *
-     * @param tokenModelFile Path to the model-file
+     * @param tokenModelFile URL of the model-file
      * @throws IOException
      */
-    public void setTokenizer(final String tokenModelFile) throws IOException {
+    public void setTokenizer(final URL tokenModelFile) throws IOException {
 
         InputStream tokenStream = null;
 
         try {
             //initialize tokenize
-            tokenStream = new FileInputStream(tokenModelFile);
+            tokenStream = tokenModelFile.openStream();
             TokenizerModel tokenizerModel = new TokenizerModel(tokenStream);
             this.tokenizer = new TokenizerME(tokenizerModel);
         }
@@ -99,16 +97,16 @@ public class Parser {
     /**
      * Set up the lemmatizer-module
      *
-     * @param lemmaModelFile Path to the model-file
+     * @param lemmaModelFile URL of the model-file
      * @throws IOException
      */
-    public void setLemmatizer(final String lemmaModelFile) throws IOException {
+    public void setLemmatizer(final URL lemmaModelFile) throws IOException {
         InputStream lemmaStream = null;
 
         try {
 
             //initialize lemmatizer
-            lemmaStream = new FileInputStream(lemmaModelFile);
+            lemmaStream = lemmaModelFile.openStream();
             LemmatizerModel lemmatizerModel = new LemmatizerModel(lemmaStream);
             this.lemmatizer = new LemmatizerME(lemmatizerModel);
         }
@@ -131,17 +129,17 @@ public class Parser {
     /**
      * Set up the sentence-splitter-module
      *
-     * @param splitterModelFile Path to the model-file
+     * @param splitterModelFile URL of the model-file
      * @throws IOException
      */
-    public void setSplitter( final String splitterModelFile) throws IOException {
+    public void setSplitter( final URL splitterModelFile) throws IOException {
 
         InputStream splitterStream = null;
 
         try {
 
             //initialize splitter
-            splitterStream = new FileInputStream(splitterModelFile);
+            splitterStream = splitterModelFile.openStream();
             SentenceModel sentenceModel = new SentenceModel(splitterStream);
             this.splitter = new SentenceDetectorME(sentenceModel);
         }
