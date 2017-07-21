@@ -4,32 +4,48 @@ package searcher;
  * Created by Daniela on 12.07.2017.
  */
 
-import backend.Parser;
 import backend.TextProvider;
 import backend.TextProviderFactory;
 import backend.exceptions.ModuleNotInitializedException;
 import main.Main;
-import searcher.datatype.SearchResult;
 import org.apache.commons.lang3.StringUtils;
+import searcher.datatype.SearchResult;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 
 
 public class Searcher {
 
+    /**
+     * Search for a provided word in a file or webpage
+     *
+     * @param targetWord   The word to search for
+     * @param path         The path/url to the file/webpage
+     * @param providerType The TextProvider type, depending on the source being a local file or url
+     * @return ArrayList with all the search results
+     * @throws IOException
+     * @throws ModuleNotInitializedException If the Parser-models have not been loaded at application start. This shoudl not happen, as
+     *                                       the Application is forced to close itself, if it fails to load even one of the models
+     */
     public static ArrayList<SearchResult> searchForTargetWord(final String targetWord, final String path, final TextProviderFactory.PROVIDER_TYPES providerType) throws IOException, ModuleNotInitializedException {
-
-        System.out.println("Searching for word: " +targetWord);
 
         BufferedReader br = null;
 
         try {
 
+            //Get the right TextProvider
             TextProvider provider = TextProviderFactory.getTextProvider(path, providerType);
 
-            br = new BufferedReader(provider.getContentReader());
+            if (provider != null) {
+                br = new BufferedReader(provider.getContentReader());
+            }
+            else {
+                throw new ModuleNotInitializedException("Provider was not set-up correctly!");
+            }
 
             String[] wordsOnLine;
             String line;
@@ -37,18 +53,19 @@ public class Searcher {
 
             while ((line = br.readLine()) != null) {
 
-                String[] sentences = null;
+                String[] sentences;
 
-                if (StringUtils.containsIgnoreCase(line, targetWord))
-                {
+                //Check if target-word is in the line, if yes, split the sentences
+                if (StringUtils.containsIgnoreCase(line, targetWord)) {
                     sentences = Main.getParser().splitSentences(line);
                 }
-                else
-                {
+                else {
                     continue;
                 }
 
+                //Now let's search for the sentences, which actually contain the target-word
                 for (int sentenceId = 0; sentenceId < sentences.length; sentenceId++) {
+
 
                     if (StringUtils.containsIgnoreCase(sentences[sentenceId], targetWord)) {
                         wordsOnLine = Main.getParser().tokenize(sentences[sentenceId]); //split the line into separate words
@@ -65,31 +82,37 @@ public class Searcher {
 
             return foundTargets;
         }
-        catch (FileNotFoundException e)
-        {
+        catch (FileNotFoundException e) {
             throw new FileNotFoundException("Could not find file");
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             throw new IOException("Error while accessing file");
         }
-        finally
-        {
-            if (br != null)
-            {
-                try
-                {
+        finally {
+            if (br != null) {
+                try {
                     br.close();
                 }
-                catch (IOException e)
-                {
+                catch (IOException e) {
                     throw new IOException("Could not close BufferedReader");
                 }
             }
         }
     }
 
+    /**
+     * Search for a provided lemma in a webpage or local file
+     *
+     * @param targetLemma  The lemma to search for
+     * @param path         The file-path/url to the source
+     * @param providerType The TextProvider type, depending on the source being a local file or url
+     * @return
+     * @throws IOException
+     * @throws ModuleNotInitializedException If the Parser-models have not been loaded at application start. This shoudl not happen, as
+     *                                       the Application is forced to close itself, if it fails to load even one of the models
+     */
     public static ArrayList<SearchResult> searchForTargetLemma(final String targetLemma, final String path, final TextProviderFactory.PROVIDER_TYPES providerType) throws IOException, ModuleNotInitializedException {
+
         System.out.println("Searching for lemma: " + targetLemma);
 
         BufferedReader br = null;
@@ -98,7 +121,12 @@ public class Searcher {
 
             TextProvider provider = TextProviderFactory.getTextProvider(path, providerType);
 
-            br = new BufferedReader(provider.getContentReader());
+            if (provider != null) {
+                br = new BufferedReader(provider.getContentReader());
+            }
+            else {
+                throw new ModuleNotInitializedException("Provider was not set-up correctly!");
+            }
 
             String[] wordsOnLine;
             String line;
@@ -114,47 +142,51 @@ public class Searcher {
                     String[] tagResult = Main.getParser().getPosTag(wordsOnLine);
                     String[] lemmaResult = Main.getParser().getLemma(wordsOnLine, tagResult);
 
-                        for (int i = 0; i < lemmaResult.length; i++) {
+                    for (int i = 0; i < lemmaResult.length; i++) {
 
-                            if (targetLemma.equalsIgnoreCase(lemmaResult[i]))
-                            {
-                                foundTargets.add(saveResult(i, wordsOnLine[i], sentences[sentenceId], wordsOnLine));
-                            }
+                        if (targetLemma.equalsIgnoreCase(lemmaResult[i])) {
+                            foundTargets.add(saveResult(i, wordsOnLine[i], sentences[sentenceId], wordsOnLine));
                         }
                     }
                 }
+            }
 
             return foundTargets;
         }
-        catch (FileNotFoundException e)
-        {
+        catch (FileNotFoundException e) {
             throw new FileNotFoundException("Could not find file");
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             throw new IOException("Error while accessing file", e);
         }
-        catch (ModuleNotInitializedException e)
-        {
+        catch (ModuleNotInitializedException e) {
             throw e;
         }
-        finally
-        {
-            if (br != null)
-            {
-                try
-                {
+        finally {
+            if (br != null) {
+                try {
                     br.close();
                 }
-                catch (IOException e)
-                {
+                catch (IOException e) {
                     throw new IOException("Could not close BufferedReader");
                 }
             }
         }
     }
 
+    /**
+     * Save the found result to a SearchResult object
+     *
+     * @param wordIndex     id of the target-word in the provided sentence-parts-array
+     * @param word          The target-word as String
+     * @param sentence      The full sentence as a string
+     * @param sentenceParts The sentence split up in all the tokens as an String-array
+     * @return The SearchResult-object
+     * @throws ModuleNotInitializedException If the Parser-models have not been loaded at application start. This shoudl not happen, as
+     *                                       the Application is forced to close itself, if it fails to load even one of the models
+     */
     private static SearchResult saveResult(final int wordIndex, final String word, final String sentence, final String[] sentenceParts) throws ModuleNotInitializedException {
+
         SearchResult result = new SearchResult(wordIndex, word, sentence, sentenceParts);
 
         String precWord = "";

@@ -125,7 +125,7 @@ public class SearchResult
 
             if (i < (shortSentenceParts.length - 1))
             {
-                if(!shortSentenceTags[i+1].matches("[\\.,]|(POS)"))
+                if(!shortSentenceTags[i+1].matches("[.,]|(POS)"))
                 {
                     sentence.append(" ");
                 }

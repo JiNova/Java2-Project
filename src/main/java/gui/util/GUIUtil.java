@@ -17,6 +17,13 @@ import java.util.regex.Pattern;
 
 public class GUIUtil {
 
+    /**
+     * Show an alert in default javafx-look
+     *
+     * @param type The alert-type (INFORMATION, ERROR, etc.)
+     * @param title The title of the alert-window
+     * @param message The alert window's message
+     */
     public static void showAlert(final Alert.AlertType type, final String title, final String message) {
 
         Alert alert = new Alert(type);
@@ -27,6 +34,14 @@ public class GUIUtil {
         alert.showAndWait();
     }
 
+    /**
+     * Build TextFlow-Layout for the result-column in the result-table. Mark the target-word red and underline it
+     *
+     * @param sentence The sentence to display.
+     * @param targetWord The target-word of the search
+     *
+     * @return The TextFlow
+     */
     public static TextFlow buildTextFlow(final String sentence, final String targetWord) {
 
         TextFlow sentenceTextFlow = new TextFlow();
@@ -49,6 +64,15 @@ public class GUIUtil {
         return sentenceTextFlow;
     }
 
+    /**
+     * Helper method to save results of search into a simple textfile
+     *
+     * @param sentences The sentences of the result
+     * @param targetWordGroup Pattern-group-number of the target word in the sentence-string
+     *
+     * @return true, if saving was successful, false otherwise
+     * @throws IOException
+     */
     public static boolean saveResults(final ObservableList<Sentence> sentences, final int targetWordGroup) throws IOException {
 
         FileChooser fileChooser = new FileChooser();
