@@ -1,7 +1,7 @@
 package backend;
 
 /**
- * Created by Evo on 10.07.2017.
+ * Created by Evangelos on 10.07.2017.
  */
 
 import backend.exceptions.ModuleNotInitializedException;

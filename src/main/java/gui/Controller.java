@@ -2,7 +2,7 @@ package gui;
 
 /**
  * Created by Julia on 11.07.2017
- * Modified by Andy
+ * Modified by Andreas
  */
 
 import backend.TextProviderFactory;

@@ -6,7 +6,7 @@ import main.Main;
 import java.util.Arrays;
 
 /**
- * Created by andy on 14.07.17.
+ * Created by Andreas on 14.07.17.
  */
 
 /**

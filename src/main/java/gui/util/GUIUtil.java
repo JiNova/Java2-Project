@@ -1,7 +1,7 @@
 package gui.util;
 
 /**
- * Created by Andy on 19.07.2017
+ * Created by Andreas on 19.07.2017
  */
 
 import gui.Sentence;

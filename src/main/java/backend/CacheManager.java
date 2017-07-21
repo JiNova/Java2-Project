@@ -1,7 +1,7 @@
 package backend;
 
 /**
- * Created by Andy on 18.07.2017
+ * Created by Andreas on 18.07.2017
  */
 
 import java.io.File;
