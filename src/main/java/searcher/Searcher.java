@@ -4,7 +4,6 @@ package searcher;
  * Created by Daniela on 12.07.2017.
  */
 
-import backend.Parser;
 import backend.TextProvider;
 import backend.TextProviderFactory;
 import backend.exceptions.ModuleNotInitializedException;
@@ -190,25 +189,31 @@ public class Searcher {
 
         SearchResult result = new SearchResult(wordIndex, word, sentence, sentenceParts);
 
-        String precWord = "";
-        String folWord = "";
+        int precWordIndex = 0;
+        int folWordIndex = sentenceParts.length - 1;
 
         if (wordIndex != 0) { //wenn wort nicht am satzanfang ist
-            precWord = sentenceParts[wordIndex - 1];
+            precWordIndex = wordIndex - 1;
         }
 
         if (wordIndex + 1 != sentenceParts.length) { //wenn i+1 nicht das ende von dem array ist
-            folWord = sentenceParts[wordIndex + 1];
+            folWordIndex = wordIndex + 1;
         }
 
-        String words[] = {precWord, word, folWord};
-        Map<String, String> wordsAndTags = Main.getParser().getWordsTag(words);
+        String tags[] = Main.getParser().getPosTag(sentenceParts);
 
         String lemma = Main.getParser().getLemma(sentenceParts, Main.getParser().getPosTag(sentenceParts))[wordIndex];
 
-        result.setTargetTag(wordsAndTags.get(word));
-        result.setPrecTag(wordsAndTags.get(precWord));
-        result.setFolTag(wordsAndTags.get(folWord));
+        result.setTargetTag(tags[wordIndex]);
+
+        if (precWordIndex != wordIndex) {
+            result.setPrecTag(tags[precWordIndex]);
+        }
+
+        if (folWordIndex != wordIndex) {
+            result.setFolTag(tags[folWordIndex]);
+        }
+
         result.setLemma(lemma);
 
         return result;

@@ -177,34 +177,6 @@ public class Parser {
         }
     }
 
-
-    /**
-     * Save tokens and corresponding POS tags into a Map
-     *
-     * @param words
-     * @return
-     * @throws ModuleNotInitializedException
-     */
-    public Map<String, String> getWordsTag(String[] words) throws ModuleNotInitializedException {
-        Map<String, String> results = new HashMap<String, String>();
-
-        //get the POS tags of all words
-        String[] tags = getPosTag(words);
-        //same amount of tags and tokens
-        if (words.length != tags.length) {
-            //We done goofed
-            return null;
-        } else {
-            //iterate through all tokens and tags
-            for (int i = 0; i < words.length; i++) {
-                //save current token as key and tag as value
-                results.put(words[i], tags[i]);
-            }
-            //return the map
-            return results;
-        }
-    }
-
     /**
      * Lemmas of the text
      *
